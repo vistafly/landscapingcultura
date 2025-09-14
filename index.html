@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culturascape - Luxury Landscaping & Garden Design</title>
+    <meta name="description" content="Premier luxury landscaping services. Transform your estate with bespoke garden designs, professional arboriculture, and exclusive outdoor sanctuaries.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#about" class="nav-link">Atelier</a></li>
+                <li><a href="#portfolio" class="nav-link">Gallery</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#booking" class="nav-link consultation-btn"> Consultation</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-video-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-text">Est. 2024 • Family Owned & Operated</span>
+            </div>
+            <div class="hero-logo">
+    <img src="./images/logo.png" 
+         alt="Culturascape Luxury Landscaping" 
+         class="logo-img"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div class="logo-fallback" style="display: none;">
+        <h1>Culturascape</h1>
+        <span>Luxury Garden Atelier</span>
+    </div>
+</div>
+            <div class="hero-buttons">
+                <a href="#portfolio" class="btn-luxury-secondary">
+                    <span>View Our Portfolio</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#booking" class="btn-luxury-primary">
+                    <span>Private Consultation</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>Discover Excellence</span>
+        </div>
+    </section>
+
+    <!-- Prestige Indicators -->
+    <section class="prestige-section">
+        <div class="container">
+            <div class="prestige-grid">
+                <div class="prestige-item">
+                    <div class="prestige-number">500+</div>
+                    <div class="prestige-label">Luxury Estates</div>
+                </div>
+                <div class="prestige-item">
+                    <div class="prestige-number">15+</div>
+                    <div class="prestige-label">Years of Excellence</div>
+                </div>
+                <div class="prestige-item">
+                    <div class="prestige-number">25+</div>
+                    <div class="prestige-label">Design Awards</div>
+                </div>
+                <div class="prestige-item">
+                    <div class="prestige-number">100%</div>
+                    <div class="prestige-label">Client Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header-luxury">
+                <div class="section-subtitle">Our Expertise</div>
+                <h2>Curated Landscape Services</h2>
+                <p>Each project is a masterpiece, meticulously crafted to reflect your vision and enhance your lifestyle.</p>
+            </div>
+            <div class="services-luxury-grid">
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Bespoke Garden Design</h3>
+                    <p>Conceptual artistry meets botanical expertise in our signature landscape designs. We create unique outdoor sanctuaries that reflect your personal aesthetic and lifestyle aspirations.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">3D Visualization</span>
+                        <span class="feature-tag">Custom Planning</span>
+                        <span class="feature-tag">Sustainable Design</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <h3>Master Arboriculture</h3>
+                    <p>Our certified arborists provide comprehensive tree care services, from heritage tree preservation to strategic landscape enhancement, ensuring the health and beauty of your verdant estate.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Certified Specialists</span>
+                        <span class="feature-tag">Health Assessment</span>
+                        <span class="feature-tag">Preservation Plans</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3>Smart Irrigation Systems</h3>
+                    <p>State-of-the-art irrigation technology seamlessly integrated into your landscape design. Precision water management that ensures optimal plant health while conserving this precious resource.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Smart Technology</span>
+                        <span class="feature-tag">Water Conservation</span>
+                        <span class="feature-tag">Remote Monitoring</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Estate Maintenance</h3>
+                    <p>White-glove maintenance services that preserve the integrity and beauty of your landscape investment. Our artisans ensure your outdoor sanctuary remains pristine year-round.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Seasonal Care</span>
+                        <span class="feature-tag">Precision Pruning</span>
+                        <span class="feature-tag">Luxury Service</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-hammer"></i>
+                    </div>
+                    <h3>Luxury Hardscaping</h3>
+                    <p>Exquisite outdoor living spaces featuring premium materials and masterful craftsmanship. From Italian stone terraces to custom water features that create lasting impressions.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Premium Materials</span>
+                        <span class="feature-tag">Custom Features</span>
+                        <span class="feature-tag">Master Craftsmen</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-luxury-card" data-tilt>
+                    <div class="service-luxury-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Botanical Curation</h3>
+                    <p>Exclusive access to rare and exotic plant specimens. Our horticultural experts source and cultivate extraordinary botanicals to create truly unique landscape compositions.</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Rare Specimens</span>
+                        <span class="feature-tag">Expert Curation</span>
+                        <span class="feature-tag">Unique Collections</span>
+                    </div>
+                    <a href="#booking" class="service-luxury-link">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-luxury">
+        <div class="container">
+            <div class="about-luxury-content">
+                <div class="about-luxury-text">
+                    <div class="section-header-luxury">
+                        <div class="section-subtitle">Our Atelier</div>
+                        <h2>Where Artistry Meets Nature</h2>
+                    </div>
+                    <div class="about-luxury-description">
+                        <p>Founded on the principle that landscape design is an art form, Culturascape has been creating extraordinary outdoor experiences for discerning clients for over a decade and a half.</p>
+                        <p>Our team of master designers, certified horticulturists, and skilled artisans collaborate to transform ordinary spaces into breathtaking sanctuaries that reflect your unique vision and lifestyle.</p>
+                    </div>
+                    <div class="about-luxury-features">
+                        <div class="luxury-feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Award-Winning Design</h4>
+                                <p>Recognized internationally for innovative landscape architecture</p>
+                            </div>
+                        </div>
+                        <div class="luxury-feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Sustainable Luxury</h4>
+                                <p>Eco-conscious practices without compromising on elegance</p>
+                            </div>
+                        </div>
+                        <div class="luxury-feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Bespoke Service</h4>
+                                <p>Personalized attention to every detail of your project</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-luxury-visual">
+                    <div class="luxury-image-frame">
+                        <div class="image-placeholder-luxury">
+                            <i class="fas fa-image"></i>
+                            <p>Master Landscape Designer</p>
+                            <span>At Work in Our Design Studio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio-luxury">
+        <div class="container">
+            <div class="section-header-luxury">
+                <div class="section-subtitle">Our Masterpieces</div>
+                <h2>Portfolio of Excellence</h2>
+                <p>Each project tells a unique story of transformation, artistry, and uncompromising quality.</p>
+            </div>
+            <div class="portfolio-luxury-grid">
+                <div class="portfolio-luxury-item" data-aos="fade-up">
+                    <div class="portfolio-luxury-image">
+                        <div class="image-placeholder-luxury">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="portfolio-luxury-overlay">
+                            <div class="portfolio-luxury-content">
+                                <h4>Hamptons Estate Garden</h4>
+                                <p>Classical English design with contemporary sophistication</p>
+                                <div class="portfolio-tags">
+                                    <span>Garden Design</span>
+                                    <span>Water Features</span>
+                                    <span>Estate Grounds</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="portfolio-luxury-image">
+                        <div class="image-placeholder-luxury">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="portfolio-luxury-overlay">
+                            <div class="portfolio-luxury-content">
+                                <h4>Modern Zen Sanctuary</h4>
+                                <p>Minimalist design with Japanese-inspired elements</p>
+                                <div class="portfolio-tags">
+                                    <span>Zen Garden</span>
+                                    <span>Stone Work</span>
+                                    <span>Meditation Space</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="portfolio-luxury-image">
+                        <div class="image-placeholder-luxury">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="portfolio-luxury-overlay">
+                            <div class="portfolio-luxury-content">
+                                <h4>Italian Villa Terrace</h4>
+                                <p>Tuscan-inspired outdoor living with panoramic views</p>
+                                <div class="portfolio-tags">
+                                    <span>Hardscaping</span>
+                                    <span>Outdoor Living</span>
+                                    <span>Mediterranean</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="portfolio-luxury-image">
+                        <div class="image-placeholder-luxury">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="portfolio-luxury-overlay">
+                            <div class="portfolio-luxury-content">
+                                <h4>Rooftop Urban Oasis</h4>
+                                <p>City escape featuring rare plants and innovative design</p>
+                                <div class="portfolio-tags">
+                                    <span>Urban Design</span>
+                                    <span>Rooftop Garden</span>
+                                    <span>Rare Plants</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Carousel -->
+    <section id="testimonials" class="testimonials-luxury">
+        <div class="container">
+            <div class="section-header-luxury">
+                <div class="section-subtitle">Client Testimonials</div>
+                <h2>Words from Our Clients</h2>
+                <p>The voices of satisfaction from those who have experienced the Culturascape difference.</p>
+            </div>
+            <div class="testimonials-carousel-container">
+                <div class="testimonials-carousel">
+                    <div class="testimonial-slide active">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <blockquote>
+                                "Culturascape transformed our estate into something beyond our wildest dreams. Their attention to detail and artistic vision is unparalleled. Every morning, I'm reminded of their extraordinary craftsmanship."
+                            </blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Margaret Wellington</h4>
+                                    <p>Private Estate Owner, Greenwich</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <blockquote>
+                                "Working with Culturascape was like collaborating with landscape poets. They understood our vision completely and elevated it to an art form. The result is a garden that brings us joy every single day."
+                            </blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Robert & Diana Chen</h4>
+                                    <p>Luxury Home Owners, Napa Valley</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <blockquote>
+                                "The level of sophistication and elegance they brought to our property is remarkable. From the initial consultation to the final installation, every interaction was professional and inspiring."
+                            </blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Alexander Thornfield</h4>
+                                    <p>CEO & Estate Owner, Martha's Vineyard</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <blockquote>
+                                "Culturascape doesn't just create landscapes; they craft experiences. Our rooftop garden has become the crown jewel of our penthouse, a sanctuary in the city that exceeds all expectations."
+                            </blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Sophia Rodriguez</h4>
+                                    <p>Art Collector, Manhattan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <blockquote>
+                                "The team's expertise in rare botanical specimens and their ability to integrate them seamlessly into our design vision was extraordinary. Our garden is now a living work of art."
+                            </blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>James & Victoria Sterling</h4>
+                                    <p>Private Collectors, Beverly Hills</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-navigation">
+                    <button class="carousel-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="carousel-indicators">
+                        <span class="indicator active"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                    </div>
+                    <button class="carousel-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Luxury Booking Section -->
+    <section id="booking" class="booking-luxury">
+        <div class="container">
+            <div class="booking-luxury-content">
+                <div class="booking-luxury-info">
+                    <div class="section-header-luxury">
+                        <div class="section-subtitle">Begin Your Journey</div>
+                        <h2>Schedule a Private Consultation</h2>
+                    </div>
+                    <p class="booking-luxury-description">Experience the Culturascape difference with a complimentary design consultation. Our master designers will visit your property to understand your vision and create a bespoke proposal for your outdoor sanctuary.</p>
+                    
+                    <div class="consultation-benefits">
+                        <div class="benefit-luxury-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>On-Site Design Consultation</h4>
+                                <p>Personal visit from our master landscape architects</p>
+                            </div>
+                        </div>
+                        <div class="benefit-luxury-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-drafting-compass"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Conceptual Design Presentation</h4>
+                                <p>Preliminary design concepts and 3D visualizations</p>
+                            </div>
+                        </div>
+                        <div class="benefit-luxury-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Detailed Investment Proposal</h4>
+                                <p>Transparent pricing with luxury service guarantee</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-luxury-form-container">
+                    <form id="bookingForm" class="booking-luxury-form">
+                        <div class="form-luxury-header">
+                            <h3>Request Your Private Consultation</h3>
+                            <p>Complimentary for qualified luxury properties</p>
+                        </div>
+                        
+                        <div class="form-luxury-row">
+                            <div class="form-luxury-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-luxury-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-luxury-row">
+                            <div class="form-luxury-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-luxury-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+
+                        <div class="form-luxury-group">
+                            <label for="address">Property Address *</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+
+                        <div class="form-luxury-row">
+                            <div class="form-luxury-group">
+                                <label for="serviceType">Service Interest *</label>
+                                <select id="serviceType" name="serviceType" required>
+                                    <option value="">Select your primary interest</option>
+                                    <option value="bespoke-design">Bespoke Garden Design</option>
+                                    <option value="master-arboriculture">Master Arboriculture</option>
+                                    <option value="smart-irrigation">Smart Irrigation Systems</option>
+                                    <option value="estate-maintenance">Estate Maintenance</option>
+                                    <option value="luxury-hardscaping">Luxury Hardscaping</option>
+                                    <option value="botanical-curation">Botanical Curation</option>
+                                    <option value="comprehensive-estate">Comprehensive Estate Design</option>
+                                </select>
+                            </div>
+                            <div class="form-luxury-group">
+                                <label for="budget">Investment Range</label>
+                                <select id="budget" name="budget">
+                                    <option value="">Select investment range</option>
+                                    <option value="50k-100k">$50,000 - $100,000</option>
+                                    <option value="100k-250k">$100,000 - $250,000</option>
+                                    <option value="250k-500k">$250,000 - $500,000</option>
+                                    <option value="500k-1m">$500,000 - $1,000,000</option>
+                                    <option value="over-1m">Over $1,000,000</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-luxury-row">
+                            <div class="form-luxury-group">
+                                <label for="preferredDate">Preferred Consultation Date</label>
+                                <input type="date" id="preferredDate" name="preferredDate">
+                            </div>
+                            <div class="form-luxury-group">
+                                <label for="propertySize">Property Size (acres/sq ft)</label>
+                                <input type="text" id="propertySize" name="propertySize" placeholder="e.g. 2 acres or 50,000 sq ft">
+                            </div>
+                        </div>
+
+                        <div class="form-luxury-group">
+                            <label for="projectDescription">Vision & Requirements</label>
+                            <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Share your vision for your outdoor sanctuary. What aspects of luxury landscaping inspire you? Are there specific features or styles you envision?"></textarea>
+                        </div>
+
+                        <div class="form-luxury-group checkbox-luxury-group">
+                            <label class="checkbox-luxury-label">
+                                <input type="checkbox" id="newsletter" name="newsletter">
+                                <span class="luxury-checkmark"></span>
+                                Subscribe to our exclusive design insights and seasonal luxury garden care tips
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-luxury-submit">
+                            <span class="btn-text">Schedule Private Consultation</span>
+                            <span class="btn-loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Processing...
+                            </span>
+                            <i class="fas fa-arrow-right btn-arrow"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-luxury">
+        <div class="container">
+            <div class="section-header-luxury">
+                <div class="section-subtitle">Connect With Us</div>
+                <h2>Begin Your Transformation</h2>
+                <p>Ready to create your extraordinary outdoor sanctuary? Our design atelier awaits your vision.</p>
+            </div>
+            <div class="contact-luxury-content">
+                <div class="contact-luxury-info">
+                    <div class="contact-luxury-item">
+                        <div class="contact-luxury-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-luxury-details">
+                            <h4>Private Line</h4>
+                            <p>(555) 123-LUXURY<br>Available for consultations</p>
+                        </div>
+                    </div>
+                    <div class="contact-luxury-item">
+                        <div class="contact-luxury-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-luxury-details">
+                            <h4>Correspondence</h4>
+                            <p>atelier@culturascape.com<br>consultations@culturascape.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-luxury-item">
+                        <div class="contact-luxury-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-luxury-details">
+                            <h4>Consultation Hours</h4>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: By Appointment</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-luxury-map">
+                    <div class="map-luxury-placeholder">
+                        <div class="map-luxury-overlay">
+                            <i class="fas fa-map"></i>
+                            <h4>Our Design Atelier</h4>
+                            <p>Visit our showroom and design center</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-luxury">
+        <div class="container">
+            <div class="footer-luxury-content">
+                <div class="footer-luxury-section">
+                    <div class="footer-logo-luxury">
+                        <div class="logo-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h3>Culturascape</h3>
+                            <span>Luxury Garden Atelier</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">Creating extraordinary outdoor sanctuaries for discerning clientele. Where artistry meets horticulture in perfect harmony.</p>
+                    <div class="social-links-luxury">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Houzz"><i class="fas fa-home"></i></a>
+                    </div>
+                </div>
+                <div class="footer-luxury-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Bespoke Garden Design</a></li>
+                        <li><a href="#services">Master Arboriculture</a></li>
+                        <li><a href="#services">Smart Irrigation</a></li>
+                        <li><a href="#services">Estate Maintenance</a></li>
+                        <li><a href="#services">Luxury Hardscaping</a></li>
+                        <li><a href="#services">Botanical Curation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-luxury-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">Our Atelier</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#">Awards & Recognition</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                    </ul>
+                </div>
+                <div class="footer-luxury-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Design Inspiration</a></li>
+                        <li><a href="#">Luxury Garden Care</a></li>
+                        <li><a href="#">Rare Plant Library</a></li>
+                        <li><a href="#">Seasonal Guides</a></li>
+                        <li><a href="#">Investment Calculator</a></li>
+                        <li><a href="#">Maintenance Programs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-luxury-bottom">
+                <p>&copy; 2025 Culturascape Luxury Garden Atelier. All rights reserved.</p>
+                <div class="footer-luxury-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Client Portal</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-luxury">
+        <div class="modal-luxury-content">
+            <span class="close-modal-luxury">&times;</span>
+            <div class="modal-luxury-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Consultation Requested</h3>
+            <p>Thank you for your interest in Culturascape. Our design team will contact you within 24 hours to schedule your private consultation and begin crafting your extraordinary outdoor sanctuary.</p>
+            <button class="btn-luxury-primary" onclick="closeModal()">
+                <span>Close</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-leaf floating-leaf-1">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="floating-leaf floating-leaf-2">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="floating-leaf floating-leaf-3">
+            <i class="fas fa-leaf"></i>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
+                
