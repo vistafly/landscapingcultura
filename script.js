@@ -481,7 +481,63 @@ class NavigationManager {
         requestAnimationFrame(animation);
     }
 }
+function tryLoadImage(imgId, placeholderId, imageNumber) {
+    const img = document.getElementById(imgId);
+    const placeholder = document.getElementById(placeholderId);
+    
+    // List of possible paths and extensions to try
+    const possiblePaths = [
+        `/images/portfolio${imageNumber}.jpg`,
+        `images/portfolio${imageNumber}.jpg`,
+        `./images/portfolio${imageNumber}.jpg`,
+        `/images/portfolio${imageNumber}.png`,
+        `images/portfolio${imageNumber}.png`,
+        `./images/portfolio${imageNumber}.png`,
+        `/images/portfolio${imageNumber}.jpeg`,
+        `images/portfolio${imageNumber}.jpeg`,
+        `./images/portfolio${imageNumber}.jpeg`,
+        `/portfolio${imageNumber}.jpg`,
+        `portfolio${imageNumber}.jpg`,
+        `./portfolio${imageNumber}.jpg`
+    ];
+    
+    let currentIndex = 0;
+    
+    function tryNextPath() {
+        if (currentIndex >= possiblePaths.length) {
+            console.log(`All paths failed for image ${imageNumber}`);
+            placeholder.innerHTML = '<i class="fas fa-image"></i><div style="margin-top: 10px; font-size: 12px; color: #666;">Image not found</div>';
+            return;
+        }
+        
+        const currentPath = possiblePaths[currentIndex];
+        console.log(`Trying path ${currentIndex + 1}/${possiblePaths.length} for image ${imageNumber}: ${currentPath}`);
+        
+        img.onload = function() {
+            console.log(`SUCCESS: Image ${imageNumber} loaded from: ${currentPath}`);
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        
+        img.onerror = function() {
+            console.log(`FAILED: Image ${imageNumber} failed to load from: ${currentPath}`);
+            currentIndex++;
+            tryNextPath();
+        };
+        
+        img.src = currentPath;
+    }
+    
+    tryNextPath();
+}
 
+// Wait for DOM to load then try loading images
+document.addEventListener('DOMContentLoaded', function() {
+    tryLoadImage('img1', 'placeholder1', 1);
+    tryLoadImage('img2', 'placeholder2', 2);
+    tryLoadImage('img3', 'placeholder3', 3);
+    tryLoadImage('img4', 'placeholder4', 4);
+});
 // ==========================================
 // TESTIMONIALS CAROUSEL
 // ==========================================

@@ -355,7 +355,251 @@ p {
 .nav-link:hover::after {
     opacity: 1;
 }
+.image-placeholder-luxury {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f9f7f4, #fdfdf9);
+    border: 3px dashed rgba(212, 175, 55, 0.3);
+    border-radius: 16px;
+    color: #666;
+    text-align: center;
+    padding: 2rem;
+    box-sizing: border-box;
+    /* Removed display: flex - now controlled by inline styles */
+}
 
+.luxury-image-frame {
+    position: relative;
+    min-height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.luxury-studio-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}
+/* ==========================================
+   FAINT VIDEO BACKGROUND SYSTEM
+   ========================================== */
+.hero {
+    position: relative;
+    /* Keep all existing hero styles */
+}
+
+.hero video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -100; /* Far behind everything */
+    opacity: 0.25; /* Slightly more visible but still subtle */
+    filter: blur(1px); /* Just a subtle blur, keeping natural colors */
+}
+
+.hero-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1); /* Very light overlay */
+    z-index: -90; /* Above video, below all animations */
+}
+
+/* Ensure all your existing animations stay on top */
+.hero::before {
+    z-index: -80; /* Your existing hero glow animation */
+}
+
+.hero-content {
+    z-index: 10; /* All content on top */
+}
+
+/* Hide video on mobile for performance */
+@media (max-width: 768px) {
+    .hero video {
+        display: none;
+    }
+}
+
+/* Video overlay for better text readability */
+.hero-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.3) 25%,
+        rgba(0, 0, 0, 0.2) 50%,
+        rgba(0, 0, 0, 0.3) 75%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: -1; /* Above video but below content */
+    pointer-events: none;
+}
+
+/* Enhanced hero section to accommodate video */
+.hero {
+    position: relative;
+    /* All existing styles remain the same */
+}
+
+/* Ensure all existing hero overlays work properly with video */
+.hero::before {
+    /* All existing styles remain the same */
+    z-index: 1; /* Above video overlay but below content */
+}
+
+.hero-content {
+    /* All existing styles remain the same */
+    z-index: 2; /* Above all backgrounds and overlays */
+}
+
+/* Tablet optimization - lower quality/smaller video */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .hero-video-background video {
+        /* You can add smaller video source here if needed */
+        filter: brightness(0.8); /* Slightly darker for better text contrast */
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY & PERFORMANCE ENHANCEMENTS
+   ========================================== */
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .hero-video-background {
+        display: none;
+    }
+    
+    .hero {
+        background: linear-gradient(
+            135deg,
+            rgba(26, 26, 26, 0.95) 0%,
+            rgba(15, 60, 46, 0.9) 50%,
+            rgba(26, 26, 26, 0.95) 100%
+        );
+    }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+    .hero-video-overlay {
+        background: rgba(0, 0, 0, 0.7); /* Stronger overlay for better contrast */
+    }
+}
+
+/* ==========================================
+   VIDEO LOADING STATES
+   ========================================== */
+.hero-video-background video {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.hero-video-background video.loaded {
+    opacity: 1;
+}
+
+/* Fallback background while video loads */
+.hero-video-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(15, 60, 46, 0.9) 50%,
+        rgba(26, 26, 26, 0.95) 100%
+    );
+    z-index: -1;
+    transition: opacity 1s ease-in-out;
+}
+
+.hero-video-background.video-loaded::before {
+    opacity: 0;
+}
+
+/* ==========================================
+   OPTIONAL: VIDEO CONTROLS (HIDDEN BY DEFAULT)
+   ========================================== */
+.hero-video-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 3;
+    display: none; /* Hidden by default */
+    gap: 10px;
+}
+
+.video-control-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.video-control-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+/* Show controls on hover (optional) */
+.hero:hover .hero-video-controls {
+    display: flex;
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+.hero-video-background video {
+    will-change: auto; /* Only animate when needed */
+    backface-visibility: hidden;
+    transform: translateX(-50%) translateY(-50%) translateZ(0); /* Hardware acceleration */
+}
+
+/* ==========================================
+   MODERN BROWSER ENHANCEMENTS
+   ========================================== */
+@supports (backdrop-filter: blur(10px)) {
+    .hero-video-overlay {
+        backdrop-filter: blur(1px); /* Subtle blur for cinematic effect */
+        -webkit-backdrop-filter: blur(1px);
+    }
+}
+
+/* Container queries for ultra-wide screens */
+@media (min-width: 2000px) {
+    .hero-video-background video {
+        min-width: 120%;
+        min-height: 120%;
+    }
+}
 /* ==========================================
    HERO SECTION - IMMERSIVE LUXURY
    ========================================== */
@@ -508,7 +752,7 @@ p {
         filter: drop-shadow(0 8px 40px rgba(0, 0, 0, 0.3));
     }
     100% { 
-        filter: drop-shadow(0 12px 50px rgba(212, 175, 55, 0.4));
+        filter: drop-shadow(0 12px 50px rgba(255, 255, 255, 0.24));
     }
 }
 
@@ -903,7 +1147,6 @@ p {
     position: relative;
     z-index: 1;
     padding-top: 80px;
-    padding-bottom: 100px;
 }
 
 .prestige-item {
@@ -1036,7 +1279,29 @@ p {
     font-weight: 300;
     letter-spacing: 0.01em;
 }
+.portfolio-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
 
+.portfolio-luxury-item:hover .portfolio-image {
+    transform: scale(1.05);
+}
+
+.image-placeholder-luxury {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    color: #999;
+    font-size: 48px;
+}
 /* ==========================================
    SERVICES SECTION - GLASS MORPHISM CARDS
    ========================================== */
@@ -1070,10 +1335,7 @@ p {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-ultra-blur);
     -webkit-backdrop-filter: var(--glass-ultra-blur);
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 40px;
     border-radius: var(--border-radius-xl);
     transition: all 0.6s var(--ease-luxury);
     box-shadow: var(--shadow-elegant);
@@ -1530,9 +1792,8 @@ p {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-ultra-blur);
     -webkit-backdrop-filter: var(--glass-ultra-blur);
-    transition: all 0.8s var(--ease-luxury);
     cursor: pointer;
-    min-height: 450px;
+    min-height: 600px;
     border: 1px solid var(--glass-border);
     transform: perspective(1000px) translateZ(0);
     box-shadow: var(--shadow-elegant);
@@ -1550,7 +1811,7 @@ p {
 
 .portfolio-luxury-image {
     position: relative;
-    height: 380px;
+    height: 600px;
     background: linear-gradient(135deg, 
         rgba(212, 175, 55, 0.12), 
         rgba(15, 60, 46, 0.1),
@@ -1558,10 +1819,9 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px dashed rgba(212, 175, 55, 0.4);
     overflow: hidden;
     margin: var(--space-md);
-    border-radius: var(--border-radius-lg);
+    border-radius: 20px;
 }
 
 .portfolio-luxury-image .image-placeholder-luxury {
@@ -1580,16 +1840,22 @@ p {
 
 .portfolio-luxury-overlay {
     position: absolute;
+    overflow: hidden;
     bottom: 0;
     left: 0;
     right: 0;
     background: linear-gradient(transparent, rgba(10, 10, 10, 0.95));
     color: var(--luxury-white);
-    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    padding: var(--space-sm) var(--space-md) var(--space-sm);
     transform: translateY(100%);
     transition: transform 0.6s var(--ease-luxury);
     backdrop-filter: var(--glass-ultra-blur);
     -webkit-backdrop-filter: var(--glass-ultra-blur);
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
 }
 
 .portfolio-luxury-item:hover .portfolio-luxury-overlay {

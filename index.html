@@ -33,6 +33,9 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <video autoplay muted loop playsinline>
+        <source src="./images/herolrs.mp4" type="video/mp4">
+    </video>
         <div class="hero-video-overlay"></div>
         <div class="hero-content">
             <div class="hero-badge">
@@ -214,7 +217,6 @@
                     </div>
                     <div class="about-luxury-description">
                         <p>Founded on the principle that landscape design is an art form, Culturascape has been creating extraordinary outdoor experiences for discerning clients for over a decade and a half.</p>
-                        <p>Our team of master designers, certified horticulturists, and skilled artisans collaborate to transform ordinary spaces into breathtaking sanctuaries that reflect your unique vision and lifestyle.</p>
                     </div>
                     <div class="about-luxury-features">
                         <div class="luxury-feature-item">
@@ -246,103 +248,119 @@
                         </div>
                     </div>
                 </div>
-                <div class="about-luxury-visual">
-                    <div class="luxury-image-frame">
-                        <div class="image-placeholder-luxury">
-                            <i class="fas fa-image"></i>
-                            <p>Master Landscape Designer</p>
-                            <span>At Work in Our Design Studio</span>
-                        </div>
+               <div class="about-luxury-visual">
+    <div class="about-luxury-visual">
+    <div class="luxury-image-frame">
+        <img src="./images/atelier.jpg" 
+             alt="Master Landscape Designer at work in our design studio" 
+             class="luxury-studio-image"
+             onload="this.nextElementSibling.style.display='none';"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+             style="display: block;">
+        <div class="image-placeholder-luxury" style="display: none;">
+            <i class="fas fa-image"></i>
+            <p>Master Landscape Designer</p>
+            <span>At Work in Our Design Studio</span>
+        </div>
+    </div>
+</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio-luxury">
-        <div class="container">
-            <div class="section-header-luxury">
-                <div class="section-subtitle">Our Masterpieces</div>
-                <h2>Portfolio of Excellence</h2>
-                <p>Each project tells a unique story of transformation, artistry, and uncompromising quality.</p>
+ <section id="portfolio" class="portfolio-luxury">
+    <div class="container">
+        <div class="section-header-luxury">
+            <div class="section-subtitle">Our Masterpieces</div>
+            <h2>Portfolio of Excellence</h2>
+            <p>Each project tells a unique story of transformation, artistry, and uncompromising quality.</p>
+        </div>
+        <div class="portfolio-luxury-grid">
+            <div class="portfolio-luxury-item" data-aos="fade-up">
+                <div class="portfolio-luxury-image">
+                    <img id="img1" src="" alt="Hamptons Estate Garden" class="portfolio-image" style="display: none;">
+                    <div class="image-placeholder-luxury" id="placeholder1">
+                        <i class="fas fa-image"></i>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">Testing image paths...</div>
+                    </div>
+                    <div class="portfolio-luxury-overlay">
+                        <div class="portfolio-luxury-content">
+                            <h4>Hamptons Estate Garden</h4>
+                            <p>Classical English design with contemporary sophistication</p>
+                            <div class="portfolio-tags">
+                                <span>Garden Design</span>
+                                <span>Water Features</span>
+                                <span>Estate Grounds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="portfolio-luxury-grid">
-                <div class="portfolio-luxury-item" data-aos="fade-up">
-                    <div class="portfolio-luxury-image">
-                        <div class="image-placeholder-luxury">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="portfolio-luxury-overlay">
-                            <div class="portfolio-luxury-content">
-                                <h4>Hamptons Estate Garden</h4>
-                                <p>Classical English design with contemporary sophistication</p>
-                                <div class="portfolio-tags">
-                                    <span>Garden Design</span>
-                                    <span>Water Features</span>
-                                    <span>Estate Grounds</span>
-                                </div>
+            <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="portfolio-luxury-image">
+                    <img id="img2" src="" alt="Modern Zen Sanctuary" class="portfolio-image" style="display: none;">
+                    <div class="image-placeholder-luxury" id="placeholder2">
+                        <i class="fas fa-image"></i>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">Testing image paths...</div>
+                    </div>
+                    <div class="portfolio-luxury-overlay">
+                        <div class="portfolio-luxury-content">
+                            <h4>Modern Zen Sanctuary</h4>
+                            <p>Minimalist design with Japanese-inspired elements</p>
+                            <div class="portfolio-tags">
+                                <span>Zen Garden</span>
+                                <span>Stone Work</span>
+                                <span>Meditation Space</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="100">
-                    <div class="portfolio-luxury-image">
-                        <div class="image-placeholder-luxury">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="portfolio-luxury-overlay">
-                            <div class="portfolio-luxury-content">
-                                <h4>Modern Zen Sanctuary</h4>
-                                <p>Minimalist design with Japanese-inspired elements</p>
-                                <div class="portfolio-tags">
-                                    <span>Zen Garden</span>
-                                    <span>Stone Work</span>
-                                    <span>Meditation Space</span>
-                                </div>
+            </div>
+            <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="portfolio-luxury-image">
+                    <img id="img3" src="" alt="Italian Villa Terrace" class="portfolio-image" style="display: none;">
+                    <div class="image-placeholder-luxury" id="placeholder3">
+                        <i class="fas fa-image"></i>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">Testing image paths...</div>
+                    </div>
+                    <div class="portfolio-luxury-overlay">
+                        <div class="portfolio-luxury-content">
+                            <h4>Italian Villa Terrace</h4>
+                            <p>Tuscan-inspired outdoor living with panoramic views</p>
+                            <div class="portfolio-tags">
+                                <span>Hardscaping</span>
+                                <span>Outdoor Living</span>
+                                <span>Mediterranean</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="200">
-                    <div class="portfolio-luxury-image">
-                        <div class="image-placeholder-luxury">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="portfolio-luxury-overlay">
-                            <div class="portfolio-luxury-content">
-                                <h4>Italian Villa Terrace</h4>
-                                <p>Tuscan-inspired outdoor living with panoramic views</p>
-                                <div class="portfolio-tags">
-                                    <span>Hardscaping</span>
-                                    <span>Outdoor Living</span>
-                                    <span>Mediterranean</span>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+            <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="portfolio-luxury-image">
+                    <img id="img4" src="" alt="Rooftop Urban Oasis" class="portfolio-image" style="display: none;">
+                    <div class="image-placeholder-luxury" id="placeholder4">
+                        <i class="fas fa-image"></i>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">Testing image paths...</div>
                     </div>
-                </div>
-                <div class="portfolio-luxury-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="portfolio-luxury-image">
-                        <div class="image-placeholder-luxury">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="portfolio-luxury-overlay">
-                            <div class="portfolio-luxury-content">
-                                <h4>Rooftop Urban Oasis</h4>
-                                <p>City escape featuring rare plants and innovative design</p>
-                                <div class="portfolio-tags">
-                                    <span>Urban Design</span>
-                                    <span>Rooftop Garden</span>
-                                    <span>Rare Plants</span>
-                                </div>
+                    <div class="portfolio-luxury-overlay">
+                        <div class="portfolio-luxury-content">
+                            <h4>Rooftop Urban Oasis</h4>
+                            <p>City escape featuring rare plants and innovative design</p>
+                            <div class="portfolio-tags">
+                                <span>Urban Design</span>
+                                <span>Rooftop Garden</span>
+                                <span>Rare Plants</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Testimonials Carousel -->
     <section id="testimonials" class="testimonials-luxury">
