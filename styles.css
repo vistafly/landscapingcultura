@@ -426,13 +426,6 @@ p {
     z-index: 10; /* All content on top */
 }
 
-/* Hide video on mobile for performance */
-@media (max-width: 768px) {
-    .hero video {
-        display: none;
-    }
-}
-
 /* Video overlay for better text readability */
 .hero-video-overlay {
     position: absolute;
@@ -1143,7 +1136,7 @@ p {
 .prestige-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--space-sm);
+    gap: var(--space-md);
     position: relative;
     z-index: 1;
     padding-top: 80px;
@@ -2305,7 +2298,7 @@ p {
 }
 
 .benefit-luxury-item:hover {
-    background: rgba(253, 253, 249, 0.95);
+    background: rgba(253, 253, 249, 0.152);
     transform: translateX(20px) scale(1.03);
     border-color: rgba(212, 175, 55, 0.3);
     box-shadow: var(--shadow-golden);
@@ -2713,7 +2706,7 @@ p {
     transform: translateY(-10px) scale(1.03);
     box-shadow: var(--shadow-golden);
     border-color: rgba(212, 175, 55, 0.4);
-    background: rgba(253, 253, 249, 1);
+    background: rgba(253, 253, 249, 0.152);
 }
 
 .contact-luxury-icon {
@@ -2851,7 +2844,7 @@ p {
 .footer-luxury {
     background: rgba(255, 255, 255, 0.075);
     color: var(--luxury-white);
-    padding: var(--space-xxl) 0 var(--space-xl);
+    padding: var(--space-md) 0 var(--space-md);
     position: relative;
     overflow: hidden;
 }
@@ -3611,21 +3604,27 @@ p {
     }
     
     .navbar {
-        width: calc(100% - var(--space-md));
-        padding: var(--space-sm) var(--space-md);
-        background:none; 
-        border: none;
-        box-shadow: none;
-    }
+    width: calc(100% - var(--space-md));
+    padding: var(--space-sm) var(--space-md);
+    background: none; 
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none; /* Add this */
+    -webkit-backdrop-filter: none; /* Add this */
+}
     
     .hamburger {
         display: flex;
     }
     .nav-container {
-        justify-content: space-between;
-        gap: var(--space-sm);
-    }
-    
+    justify-content: flex-end; /* Changed from space-between */
+    gap: var(--space-sm);
+}
+    .navbar.scrolled {
+    background: none; /* Remove background */
+    box-shadow: none; /* Remove shadow */
+    border: none; /* Remove border */
+}
     .nav-menu {
         position: fixed;
         left: -100%;

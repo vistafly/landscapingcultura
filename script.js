@@ -273,19 +273,6 @@ class ScrollAnimationManager {
         }
     }
 
-    animateElement(element) {
-        if (!element.classList.contains('luxury-fade-in-up')) {
-            element.classList.add('luxury-fade-in-up');
-            
-            const children = element.querySelectorAll('.service-luxury-card, .luxury-feature-item, .benefit-luxury-item, .portfolio-luxury-item');
-            children.forEach((child, index) => {
-                setTimeout(() => {
-                    child.classList.add('luxury-fade-in-up');
-                }, index * 100);
-            });
-        }
-    }
-
     animateCounter(element) {
         const text = element.textContent;
         const target = parseInt(text.replace(/\D/g, ''));
@@ -1264,17 +1251,6 @@ function generateId(prefix = 'id') {
 function injectCriticalAnimations() {
     const style = document.createElement('style');
     style.textContent = `
-        @keyframes luxury-fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         @keyframes luxury-scale-in {
             from {
                 opacity: 0;
@@ -1291,10 +1267,6 @@ function injectCriticalAnimations() {
                 transform: scale(2);
                 opacity: 0;
             }
-        }
-        
-        .luxury-fade-in-up {
-            animation: luxury-fade-in-up 0.8s ease-out forwards;
         }
         
         .luxury-scale-in {
