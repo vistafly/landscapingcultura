@@ -227,13 +227,13 @@ p {
 .btn-luxury-secondary,.btn-luxury-primary {
     background: var(--glass-bg);
     color: var(--luxury-white);
-    border: 2px solid var(--primary-gold);
+    border: 1px solid var(--primary-gold-light);
     backdrop-filter: var(--glass-blur);
     box-shadow: var(--shadow-elegant);
 }
 
 .btn-luxury-secondary:hover, .btn-luxury-primary:hover {
-    background: var(--gradient-gold);
+    background: rgba(37, 37, 37, 0.788);
     color: var(--luxury-black);
     transform: perspective(1000px) translateZ(15px) translateY(-6px) scale(1.03);
     box-shadow: var(--shadow-golden);
@@ -307,7 +307,7 @@ p {
     position: relative;
     display: inline-block;
     text-decoration: none;
-    color: var(--luxury-black);
+    color: rgba(156, 156, 156, 0.568);
     font-weight: 500;
     font-size: 1rem;
     text-transform: uppercase;
@@ -339,7 +339,7 @@ p {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 212, 212, 0.1);
     opacity: 0;
     transition: opacity 0.3s var(--ease-luxury);
     border-radius: var(--border-radius-sm);
@@ -347,7 +347,7 @@ p {
 }
 
 .nav-link:hover {
-    color: var(--primary-gold);
+    color: white;
     transform: translateY(-2px);
 }
 
@@ -658,14 +658,15 @@ p {
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-elegant);
-    padding: 10px;
+    padding: 15px;
+    margin-top: 15%;
 }
 
 .hero-badge::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(209, 180, 82, 0.192), transparent);
     transform: translateX(-100%);
     animation: badgeShimmer 4s infinite;
 }
@@ -680,10 +681,10 @@ p {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--primary-gold);
+    color: rgb(155, 155, 155);
     position: relative;
     z-index: 1;
-    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    text-shadow: 0 3px 60px rgba(255, 255, 255, 0.534);
 }
 
 
@@ -712,24 +713,24 @@ p {
 }
 
 .logo-img {
-    width: 145%;
-    height: auto; /* Changed from 100% to auto for better aspect ratio */
-    min-height: 120%; /* Ensure the logo fills the container */
-    object-fit: cover; /* Changed from contain to cover for cropping */
-    object-position: center; /* Keep logo centered while cropping */
-    
-    /* Position to crop out excess space */
-    transform: translateY(-15%) translateZ(0); /* Move up to crop top whitespace */
-    
-    /* Enhanced visual effects */
+    width: 155%;
+    height: auto;
+    min-height: 120%;
+    object-fit: cover;
+    object-position: center;
+    transform: translateY(-15%) translateZ(0);
     filter: drop-shadow(0 8px 40px rgba(0, 0, 0, 0.3));
     transition: all 0.6s var(--ease-luxury);
-    
-    /* GPU acceleration for smooth animations */
     will-change: transform, filter;
-    
-    /* Subtle glow animation */
     animation: logoGlow 4s ease-in-out infinite alternate;
+}
+
+/* Mobile screen adjustment */
+@media (max-width: 990px) {
+    .logo-img {
+        width: 120%;
+        min-height: auto;
+    }
 }
 
 @keyframes logoGlow {
@@ -991,7 +992,7 @@ p {
 
 .hero-buttons {
     display: flex;
-    gap: var(--space-lg);
+    gap: var(--space-xl);
     justify-content: center;
     transform: translateY(-200px); /* Adjust the value as needed */
     z-index: 999;
@@ -1000,7 +1001,7 @@ p {
 
 .hero-scroll-indicator {
     position: absolute;
-    bottom: var(--space-xl);
+    bottom: var(--space-md);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -1057,8 +1058,7 @@ p {
         background-attachment: scroll; /* improves performance on mobile */
     }
     .hero-content {
-        padding: 0 var(--space-md);
-        max-width: 90%;
+        padding: 0 var(--space-xs);
     }
 
     .hero-badge {
@@ -1099,8 +1099,9 @@ p {
     }
 
     .hero-badge {
-        margin-bottom: 160px;
+        margin-bottom: 100px;
         padding: 5px;
+        margin-top: 0;
     }
     .badge-text {
         font-size: 0.75rem;
