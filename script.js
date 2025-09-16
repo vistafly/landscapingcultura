@@ -222,7 +222,7 @@ class AccessibilityManager {
 }
 
 // ==========================================
-// SCROLL ANIMATION MANAGER
+// SCROLL ANIMATION MANAGER - FIXED VERSION
 // ==========================================
 class ScrollAnimationManager {
     constructor(performanceManager) {
@@ -270,6 +270,43 @@ class ScrollAnimationManager {
 
             const counters = document.querySelectorAll('.prestige-number');
             counters.forEach(counter => counterObserver.observe(counter));
+        }
+    }
+
+    animateElement(element) {
+        // Add the animation class to trigger CSS animations
+        element.classList.add('luxury-scale-in');
+        
+        // Optional: Add a subtle transform animation
+        if (!this.performanceManager.reducedMotion) {
+            element.style.transform = 'translateY(20px)';
+            element.style.opacity = '0';
+            element.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+            
+            // Use requestAnimationFrame to ensure the initial styles are applied
+            requestAnimationFrame(() => {
+                element.style.transform = 'translateY(0)';
+                element.style.opacity = '1';
+            });
+        }
+    }
+
+    // ADD THIS MISSING METHOD
+    animateElement(element) {
+        // Add the animation class to trigger CSS animations
+        element.classList.add('luxury-scale-in');
+        
+        // Optional: Add a subtle transform animation
+        if (!this.performanceManager.reducedMotion) {
+            element.style.transform = 'translateY(20px)';
+            element.style.opacity = '0';
+            element.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+            
+            // Use requestAnimationFrame to ensure the initial styles are applied
+            requestAnimationFrame(() => {
+                element.style.transform = 'translateY(0)';
+                element.style.opacity = '1';
+            });
         }
     }
 

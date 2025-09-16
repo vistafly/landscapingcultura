@@ -3,8 +3,9 @@
    State-of-the-art design & effects system
    ========================================== */
 
+
 :root {
-    /* Luxury Color Palette - Enhanced */
+    /* Monochromatic Color Palette */
     --primary-gold: #d4af37;
     --primary-gold-light: #f4e184;
     --primary-gold-dark: #b8941f;
@@ -13,22 +14,25 @@
     --luxury-charcoal: #1a1a1a;
     --luxury-grey: #2a2a2a;
     --luxury-grey-light: #3a3a3a;
+    --luxury-grey-medium: #505050;
+    --luxury-grey-soft: #707070;
     --luxury-white: #fdfdf9;
     --luxury-cream: #f9f7f4;
     --luxury-cream-light: #fcfaf7;
     --luxury-silver: #c0c0c0;
-    --emerald: #0f3c2e;
-    --emerald-light: #1a5a47;
-    --emerald-dark: #0a2920;
-    --emerald-glow: rgba(15, 60, 46, 0.3);
-    --emerald-ultra: rgba(15, 60, 46, 0.15);
+    --luxury-silver-light: #e0e0e0;
+    --luxury-silver-dark: #909090;
     
-    /* Premium Gradients */
+    /* Removed emerald colors entirely */
+    
+    /* Premium Gradients - Monochromatic Focus */
     --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4e184 50%, #d4af37 100%);
     --gradient-gold-radial: radial-gradient(circle, #f4e184 0%, #d4af37 70%);
-    --gradient-emerald: linear-gradient(135deg, #0f3c2e 0%, #1a5a47 100%);
+    --gradient-monochrome: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+    --gradient-monochrome-light: linear-gradient(135deg, #f9f7f4 0%, #fdfdf9 50%, #fcfaf7 100%);
     --gradient-luxury: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
     --gradient-glass: linear-gradient(135deg, rgba(253, 253, 249, 0.25) 0%, rgba(253, 253, 249, 0.1) 100%);
+    --gradient-silver: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
     
     /* Typography System */
     --font-primary: 'Playfair Display', serif;
@@ -45,13 +49,13 @@
     --space-xxl: 8rem;
     --space-ultra: 12rem;
     
-    /* Premium Shadow System */
+    /* Premium Shadow System - Monochromatic */
     --shadow-subtle: 0 2px 20px rgba(0, 0, 0, 0.08);
     --shadow-elegant: 0 8px 60px rgba(0, 0, 0, 0.12);
     --shadow-dramatic: 0 20px 80px rgba(0, 0, 0, 0.25);
-    --shadow-golden: 0 10px 50px rgba(212, 175, 55, 0.3);
-    --shadow-golden-intense: 0 20px 80px rgba(212, 175, 55, 0.4);
-    --shadow-emerald: 0 10px 50px rgba(15, 60, 46, 0.2);
+    --shadow-golden: 0 10px 50px rgba(212, 175, 55, 0.2); /* Reduced opacity */
+    --shadow-golden-intense: 0 20px 80px rgba(212, 175, 55, 0.25); /* Reduced opacity */
+    --shadow-monochrome: 0 10px 50px rgba(42, 42, 42, 0.3);
     --shadow-ultra: 0 30px 100px rgba(0, 0, 0, 0.3);
     --shadow-inset: inset 0 2px 20px rgba(0, 0, 0, 0.1);
     --shadow-whitebb: 0 10px 50px rgba(109, 109, 109, 0.192);
@@ -148,7 +152,7 @@ h1 {
 h2 {
     font-size: clamp(2.5rem, 6vw, 5rem);
     position: relative;
-    background: linear-gradient(135deg, var(--luxury-black) 0%, var(--emerald) 100%);
+    background: linear-gradient(135deg, var(--luxury-black) 0%, var(--luxury-white) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -305,9 +309,9 @@ p {
     text-decoration: none;
     color: var(--luxury-black);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--border-radius-sm);
     transition: color 0.3s var(--ease-luxury), transform 0.3s var(--ease-luxury);
@@ -376,7 +380,6 @@ p {
 
 .luxury-image-frame {
     position: relative;
-    min-height: 500px;
     border-radius: 16px;
     overflow: hidden;
 }
@@ -405,16 +408,6 @@ p {
     z-index: -100; /* Far behind everything */
     opacity: 0.25; /* Slightly more visible but still subtle */
     filter: blur(1px); /* Just a subtle blur, keeping natural colors */
-}
-
-.hero-video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.1); /* Very light overlay */
-    z-index: -90; /* Above video, below all animations */
 }
 
 /* Ensure all your existing animations stay on top */
@@ -581,8 +574,7 @@ p {
    ========================================== */
 @supports (backdrop-filter: blur(10px)) {
     .hero-video-overlay {
-        backdrop-filter: blur(1px); /* Subtle blur for cinematic effect */
-        -webkit-backdrop-filter: blur(1px);
+        height: fit-content;
     }
 }
 
@@ -616,7 +608,7 @@ p {
     top: 0;
     left: 0;
     right: 0;
-    bottom: -200vh; /* Extend even further down to cover services section */
+    bottom: -225vh; /* Extend even further down to cover services section */
     background: 
         radial-gradient(ellipse at 20% 70%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 30%, rgba(15, 60, 46, 0.15) 0%, transparent 50%);
@@ -1107,7 +1099,7 @@ p {
     }
 
     .hero-badge {
-        margin-bottom: 90px;
+        margin-bottom: 160px;
         padding: 5px;
     }
     .badge-text {
@@ -1125,7 +1117,7 @@ p {
 .prestige-section {
     color: var(--luxury-white);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 @keyframes prestigeAmbient {
@@ -1139,7 +1131,7 @@ p {
     gap: var(--space-md);
     position: relative;
     z-index: 1;
-    padding-top: 80px;
+    padding-top: 130px;
 }
 
 .prestige-item {
@@ -1256,7 +1248,7 @@ p {
     bottom: calc(-1 * var(--space-md));
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
+    width: 150px;
     height: 6px;
     background: var(--gradient-gold);
     border-radius: 3px;
@@ -1315,6 +1307,12 @@ p {
     position: relative;
 }
 
+@media (max-width: 768px) {
+    .services {
+        padding-top: 5vh;
+    }
+}
+
 .services-luxury-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
@@ -1337,6 +1335,11 @@ p {
     overflow: hidden;
     cursor: pointer;
     transform: perspective(1000px) translateZ(0);
+    
+    /* Add these flex properties */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This will center all content horizontally */
 }
 
 .service-luxury-card::before {
@@ -1371,8 +1374,7 @@ p {
 .service-luxury-card:hover {
     transform: perspective(1000px) translateZ(40px) translateY(-20px) rotateX(5deg);
     box-shadow: var(--shadow-golden-intense);
-    background: rgba(71, 71, 71, 0.822);
-    border-color: rgba(212, 175, 55, 0.4);
+    border-color: rgba(219, 210, 181, 0.274);
 }
 
 .service-luxury-icon {
@@ -1442,10 +1444,20 @@ p {
 .service-features {
     display: flex;
     gap: var(--space-sm);
-    margin-bottom: 20px;
     justify-content: center;
+    flex-wrap: wrap-reverse;
+    white-space: nowrap;
 }
 
+.service-features > * {
+    flex: 0 0 auto;
+    min-width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
 .feature-tag {
     background: rgba(212, 175, 55, 0.15);
     color: var(--emerald);
@@ -1483,56 +1495,79 @@ p {
 }
 
 .service-luxury-link {
-    color: var(--emerald);
+    color: white;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 600;
     position: relative;
     z-index: 1;
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
-    transition: all 0.4s var(--ease-luxury);
+    transition: all 0.3s var(--ease-luxury);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 0.95rem;
-    padding: 10px;
-    border-radius: var(--border-radius-lg);
-    background: rgba(15, 60, 46, 0.1);
-    border: 2px solid rgba(15, 60, 46, 0.2);
-    margin: 0 auto;
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: var(--border-radius-sm);
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    margin-top: var(--space-md);
+    width: fit-content;
+    align-self: center; /* This will now work */
+    
+}
+.service-luxury-link {
+    /* ... other properties ... */
+    width: 300px; /* or whatever width you prefer */
+    justify-content: center; /* center the text within the wider button */
 }
 
 .service-luxury-link::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: var(--gradient-emerald);
-    opacity: 0;
-    transition: opacity 0.4s var(--ease-luxury);
-    border-radius: var(--border-radius-lg);
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 0.8) 100%
+    );
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.6),
+        0 0 16px rgba(255, 255, 255, 0.4),
+        0 0 24px rgba(255, 255, 255, 0.2);
+    transition: width 0.3s var(--ease-luxury);
+    border-radius: 1px;
+    filter: blur(0.5px);
 }
 
 .service-luxury-link:hover::before {
-    opacity: 1;
+    box-shadow: 
+        0 0 12px rgba(255, 255, 255, 0.8),
+        0 0 24px rgba(255, 255, 255, 0.6),
+        0 0 36px rgba(255, 255, 255, 0.4),
+        0 0 48px rgba(255, 255, 255, 0.2);
+}
+
+.service-luxury-link:hover::before {
+    width: 100%;
 }
 
 .service-luxury-link:hover {
-    color: var(--luxury-white);
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: var(--shadow-emerald);
-    border-color: var(--emerald);
+    color: rgb(255, 255, 255);
+    border-color: rgb(150, 150, 150);
+    transform: translateX(8px);
 }
 
 .service-luxury-link i {
     transition: transform 0.3s var(--ease-luxury);
-    position: relative;
-    z-index: 1;
+    font-size: 0.85rem;
 }
 
 .service-luxury-link:hover i {
-    transform: translateX(8px);
+    transform: translateX(4px);
 }
 
 /* ==========================================
@@ -1543,6 +1578,12 @@ p {
     background: var(--luxury-white);
     position: relative;
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .about-luxury {
+        padding-top: 5vh;
+    }
 }
 
 .about-luxury::before {
@@ -1559,20 +1600,25 @@ p {
 .about-luxury-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-xxl);
+    gap: 20%;
     align-items: center;
     position: relative;
     z-index: 1;
 }
 
-.about-luxury-text .section-header-luxury {
-    text-align: left;
-    margin-bottom: var(--space-lg);
+@media (max-width: 1100px) {
+    .about-luxury-content {
+        display: block;
+    }
+}
+@media (max-width: 1690px) {
+    .about-luxury-content {
+        gap: 5%;
+    }
 }
 
-.about-luxury-text .section-header-luxury h2::after {
-    left: 0;
-    transform: none;
+.about-luxury-text .section-header-luxury {
+    margin-bottom: var(--space-lg);
 }
 
 .about-luxury-description p {
@@ -1585,8 +1631,8 @@ p {
 .about-luxury-features {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
-    margin-top: var(--space-xl);
+    gap: var(--space-md);
+    margin-top: 0px;
 }
 
 .luxury-feature-item {
@@ -1619,7 +1665,7 @@ p {
 }
 
 .luxury-feature-item:hover {
-    background: rgba(253, 253, 249, 0.95);
+    background: rgba(253, 253, 249, 0.11);
     transform: translateX(20px) scale(1.03);
     border-color: rgba(212, 175, 55, 0.3);
     box-shadow: var(--shadow-golden);
@@ -1676,6 +1722,13 @@ p {
 .about-luxury-visual {
     position: relative;
 }
+
+@media (max-width: 1100px) {
+.about-luxury-visual {
+    margin-top: 10%;
+    }
+}
+
 
 .luxury-image-frame {
     position: relative;
@@ -1771,9 +1824,10 @@ p {
 
 .portfolio-luxury-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: var(--space-md);
-    margin-top: var(--space-xxl);
+    margin-top: var(--space-lg);
     position: relative;
     z-index: 1;
 }
@@ -1813,7 +1867,6 @@ p {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin: var(--space-md);
     border-radius: 20px;
 }
 
@@ -1844,8 +1897,6 @@ p {
     transition: transform 0.6s var(--ease-luxury);
     backdrop-filter: var(--glass-ultra-blur);
     -webkit-backdrop-filter: var(--glass-ultra-blur);
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
 
@@ -1917,7 +1968,7 @@ p {
    TESTIMONIALS SECTION - CAROUSEL REDESIGN
    ========================================== */
 .testimonials-luxury {
-    padding: var(--space-xxl) 0;
+    padding: var(--space-lg) 0;
     background: var(--luxury-cream);
     position: relative;
     overflow: hidden;
@@ -1940,7 +1991,7 @@ p {
 
 .testimonials-carousel {
     position: relative;
-    height: 1000px;
+    height: 70vh;
     overflow: hidden;
     border-radius: var(--border-radius-xl);
 }
@@ -2112,16 +2163,14 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-xl);
-    margin-top: var(--space-sm);
-    margin-bottom: -100px;
+    gap: var(--space-lg);
     position: relative;
     z-index: 1;
 }
 
 .carousel-btn {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background: var(--gradient-emerald);
     border: none;
     border-radius: var(--border-radius-round);
@@ -2176,7 +2225,7 @@ p {
 
 .carousel-indicators {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-sm);
 }
 
 .indicator {
@@ -2245,14 +2294,15 @@ p {
     z-index: 1;
 }
 
-.booking-luxury-info .section-header-luxury {
-    text-align: left;
-    margin-bottom: var(--space-lg);
+@media (max-width: 768px) {
+    .booking-luxury-content {
+        display: block;
+    }
 }
-
-.booking-luxury-info .section-header-luxury h2::after {
-    left: 0;
-    transform: none;
+@media (max-width: 768px) {
+    .section-header-luxury  {
+        text-align: center;
+    }
 }
 
 .booking-luxury-description {
@@ -2362,6 +2412,7 @@ p {
     overflow: hidden;
     box-shadow: var(--shadow-ultra);
     border: 1px solid rgba(212, 175, 55, 0.2);
+    margin-top: 20px;
 }
 
 .booking-luxury-form-container::before {
@@ -2722,7 +2773,53 @@ p {
     overflow: hidden;
     box-shadow: var(--shadow-emerald);
 }
+/* Add this mobile-specific CSS */
+@media screen and (max-width: 768px) {
+    .contact-luxury-content {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: var(--space-lg);
+        padding: 0 1rem; /* Add horizontal padding */
+        margin-top: var(--space-lg);
+    }
+    
+    .contact-luxury-info {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .contact-luxury-item {
+        padding: var(--space-lg); /* Reduce padding on mobile */
+        gap: var(--space-md);
+    }
+    
+    .contact-luxury-icon {
+        width: 70px; /* Smaller icon on mobile */
+        height: 70px;
+    }
+    
+    /* Ensure the main container has proper padding */
+    .contact-luxury {
+        padding: var(--space-xl) 1rem;
+    }
+}
 
+/* For very small screens */
+@media screen and (max-width: 480px) {
+    .contact-luxury-content {
+        padding: 0 0.5rem;
+        gap: var(--space-md);
+    }
+    
+    .contact-luxury-item {
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+    
+    .contact-luxury-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
 .contact-luxury-icon::before {
     content: '';
     position: absolute;
@@ -2881,6 +2978,13 @@ p {
     transition: all 0.3s var(--ease-luxury);
     cursor: pointer;
 }
+
+@media (max-width: 768px) {
+    .footer-logo-luxury{
+        display:block;
+    }
+ }
+
 
 .footer-logo-luxury:hover {
     transform: scale(1.05);
@@ -3499,9 +3603,12 @@ p {
     flex-direction: column;
     cursor: pointer;
     gap: 5px;
-    padding: var(--space-xs);
+    padding: 10px;
     border-radius: var(--border-radius-sm);
     transition: all 0.3s var(--ease-luxury);
+    background-color: #00000063;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .hamburger:hover {
@@ -3628,7 +3735,7 @@ p {
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 80px; /* Reduced from 100px */
+        top: 70px; /* Reduced from 100px */
         flex-direction: column;
         background: rgb(17, 17, 17);
         backdrop-filter: var(--glass-ultra-blur);
@@ -3658,6 +3765,7 @@ p {
     .prestige-grid {
         grid-template-columns: 1fr;
         gap: var(--space-md);
+        padding-top: 5vh;
     }
 
     .services-luxury-grid {
@@ -3675,8 +3783,10 @@ p {
     }
 
     .testimonial-content {
-        padding: var(--space-lg);
-        margin: 0 var(--space-sm);
+        padding-top: 70px;
+        padding-bottom: 70px;
+        padding-left: 5px;
+        padding-right: 5px;
     }
 
     .testimonial-content blockquote {
@@ -3717,6 +3827,8 @@ p {
     
     .luxury-image-frame {
         transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
+        margin-top: 20px;
+        
     }
     
     .luxury-image-frame:hover {
@@ -3772,10 +3884,6 @@ p {
 
     .testimonials-carousel {
         height: 490px;
-    }
-
-    .testimonial-content {
-        padding: var(--space-md);
     }
 
     .testimonial-content blockquote {
