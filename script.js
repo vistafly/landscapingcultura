@@ -562,6 +562,160 @@ document.addEventListener('DOMContentLoaded', function() {
     tryLoadImage('img3', 'placeholder3', 3);
     tryLoadImage('img4', 'placeholder4', 4);
 });
+
+// ==========================================
+// FLOATING ELEMENTS MANAGER
+// ==========================================
+class FloatingElementsManager {
+    constructor(performanceManager) {
+        this.performanceManager = performanceManager;
+        this.floatingElements = document.querySelectorAll('.floating-leaf');
+        this.lastScrollY = window.scrollY;
+        this.ticking = false;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        
+        if (this.floatingElements.length > 0) {
+            this.init();
+        }
+    }
+
+    init() {
+        if (!this.performanceManager.reducedMotion) {
+            this.setupEventListeners();
+        }
+    }
+
+    setupEventListeners() {
+        // Throttled scroll handler
+        const throttledScroll = this.performanceManager.throttle(() => {
+            this.updateFloatingElements();
+        }, 16); // 60fps
+
+        // Mouse movement handler
+        const throttledMouse = this.performanceManager.throttle((e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+            this.updateFloatingElements();
+        }, 16);
+
+        // Touch movement handler
+        const throttledTouch = this.performanceManager.throttle((e) => {
+            if (e.touches.length > 0) {
+                this.mouseX = e.touches[0].clientX;
+                this.mouseY = e.touches[0].clientY;
+                this.updateFloatingElements();
+            }
+        }, 16);
+
+        // Event listeners
+        window.addEventListener('scroll', throttledScroll);
+        window.addEventListener('mousemove', throttledMouse);
+        window.addEventListener('touchmove', throttledTouch, { passive: true });
+
+        // Reset on resize
+        window.addEventListener('resize', () => {
+            this.resetElements();
+        });
+    }
+
+    updateFloatingElements() {
+        if (this.ticking) return;
+        
+        this.ticking = true;
+        requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            const scrollDelta = scrollY - this.lastScrollY;
+            
+            this.floatingElements.forEach((element, index) => {
+                const speed = parseFloat(element.dataset.speed) || 0.5;
+                const rect = element.getBoundingClientRect();
+                const elementX = rect.left + rect.width / 2;
+                const elementY = rect.top + rect.height / 2;
+                
+                // Calculate distance from mouse
+                const distanceFromMouse = Math.sqrt(
+                    Math.pow(this.mouseX - elementX, 2) + Math.pow(this.mouseY - elementY, 2)
+                );
+                
+                // Mouse influence (stronger when closer)
+                const mouseInfluence = Math.max(0, 1 - distanceFromMouse / 300);
+                const mouseOffsetX = (this.mouseX - elementX) * mouseInfluence * 0.1;
+                const mouseOffsetY = (this.mouseY - elementY) * mouseInfluence * 0.1;
+                
+                // Scroll influence
+                const scrollOffsetY = scrollDelta * speed * -0.5;
+                const scrollOffsetX = scrollDelta * speed * 0.2 * (index % 2 === 0 ? 1 : -1);
+                
+                // Get current transform values
+                const currentTransform = window.getComputedStyle(element).transform;
+                let currentX = 0, currentY = 0;
+                
+                if (currentTransform && currentTransform !== 'none') {
+                    const matrix = currentTransform.match(/matrix\(([^)]+)\)/);
+                    if (matrix) {
+                        const values = matrix[1].split(',').map(v => parseFloat(v.trim()));
+                        currentX = values[4] || 0;
+                        currentY = values[5] || 0;
+                    }
+                }
+                
+                // Apply combined movement
+                const newX = currentX + scrollOffsetX + mouseOffsetX;
+                const newY = currentY + scrollOffsetY + mouseOffsetY;
+                
+                // Get base rotation from CSS class
+                const baseRotation = this.getBaseRotation(element);
+                const rotationAdjust = scrollDelta * speed * 0.1;
+                
+                // Apply transform with base rotation preserved
+                element.style.transform = `translate(${newX}px, ${newY}px) rotate(${baseRotation + rotationAdjust}deg)`;
+            });
+            
+            this.lastScrollY = scrollY;
+            this.ticking = false;
+        });
+    }
+
+    getBaseRotation(element) {
+        if (element.classList.contains('floating-leaf-2') || 
+            element.classList.contains('floating-leaf-4') || 
+            element.classList.contains('floating-leaf-6') ||
+            element.classList.contains('floating-leaf-10') ||
+            element.classList.contains('floating-leaf-13')) {
+            return 180;
+        } else if (element.classList.contains('floating-leaf-3')) {
+            return -90;
+        } else if (element.classList.contains('floating-leaf-5')) {
+            return 45;
+        } else if (element.classList.contains('floating-leaf-7')) {
+            return -45;
+        } else if (element.classList.contains('floating-leaf-8')) {
+            return 90;
+        } else if (element.classList.contains('floating-leaf-9')) {
+            return 135;
+        } else if (element.classList.contains('floating-leaf-11')) {
+            return -135;
+        } else if (element.classList.contains('floating-leaf-12')) {
+            return 30;
+        } else if (element.classList.contains('floating-leaf-14')) {
+            return -60;
+        } else if (element.classList.contains('floating-leaf-15')) {
+            return 150;
+        }
+        return 0;
+    }
+
+    resetElements() {
+        this.floatingElements.forEach(element => {
+            element.style.transform = '';
+        });
+    }
+
+    cleanup() {
+        this.resetElements();
+    }
+}
 // ==========================================
 // TESTIMONIALS CAROUSEL
 // ==========================================
@@ -1081,6 +1235,8 @@ class CulturascapeApp {
             this.formManager = new FormManager(this.accessibilityManager);
             this.modalManager = new ModalManager(this.accessibilityManager);
             this.interactionEnhancer = new InteractionEnhancer(this.performanceManager);
+            this.floatingElementsManager = new FloatingElementsManager(this.performanceManager);
+
             
             // Additional setup
             this.setupErrorHandling();
@@ -1163,15 +1319,18 @@ class CulturascapeApp {
         };
     }
 
-    // Public API methods
     destroy() {
-        if (this.testimonialsCarousel) {
-            this.testimonialsCarousel.cleanup();
-        }
-        
-        console.log('Culturascape app destroyed');
+    if (this.testimonialsCarousel) {
+        this.testimonialsCarousel.cleanup();
     }
-
+    
+    // ADD THIS:
+    if (this.floatingElementsManager) {
+        this.floatingElementsManager.cleanup();
+    }
+    
+    console.log('Culturascape app destroyed');
+}
     toggleTheme() {
         document.body.classList.toggle('dark-theme');
         return document.body.classList.contains('dark-theme') ? 'dark' : 'light';
