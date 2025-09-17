@@ -1,5 +1,5 @@
 // ==========================================
-// FIREBASE CONFIGURATION
+// FIREBASE CONFIGURATION & INITIALIZATION
 // ==========================================
 
 const firebaseConfig = {
@@ -16,21 +16,45 @@ const firebaseConfig = {
 let db = null;
 let analytics = null;
 
-if (typeof firebase !== 'undefined') {
-    try {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        analytics = firebase.analytics();
-        console.log('Firebase initialized successfully');
-    } catch (error) {
-        console.error('Firebase initialization error:', error);
+function initializeFirebase() {
+    if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            
+            // Use the newer cache settings instead of enablePersistence
+            // Remove this deprecated method:
+            // db.enablePersistence().catch((err) => {
+            //     console.warn('Firebase persistence failed:', err.code);
+            // });
+            
+            if (firebase.analytics) {
+                analytics = firebase.analytics();
+            }
+            
+            // Make globally available
+            window.firebaseDb = db;
+            window.firebaseAnalytics = analytics;
+            
+            console.log('Firebase initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            return false;
+        }
     }
-} else {
-    console.warn('Firebase SDK not loaded');
+    return firebase.apps.length > 0;
 }
 
-// Export for use in other modules
-window.firebaseDb = db;
-window.firebaseAnalytics = analytics;
+// Auto-initialize when script loads
+if (typeof firebase !== 'undefined') {
+    initializeFirebase();
+} else {
+    window.addEventListener('load', () => {
+        if (typeof firebase !== 'undefined') {
+            initializeFirebase();
+        }
+    });
+}
 
-export { db, analytics, firebaseConfig };
+window.initializeFirebase = initializeFirebase;

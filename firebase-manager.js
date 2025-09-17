@@ -1,34 +1,48 @@
 // ==========================================
-// FIREBASE MANAGER - CENTRALIZED DATABASE OPERATIONS
+// FIXED FIREBASE MANAGER - PERMISSIONS RESOLVED
 // ==========================================
 
 class FirebaseManager {
     constructor() {
-        this.db = window.firebaseDb;
-        this.analytics = window.firebaseAnalytics;
+        this.db = null;
+        this.analytics = null;
         this.userSessionId = this.generateSessionId();
         this.userDocRef = null;
         this.interactionBuffer = [];
-        this.batchTimeout = null;
         this.isOnline = navigator.onLine;
+        this.isInitialized = false;
+        this.sessionStartTime = Date.now();
         
         this.init();
     }
 
-    init() {
-        if (!this.db) {
-            console.warn('Firebase not available');
-            return;
+    async init() {
+        let attempts = 0;
+        while (!this.isInitialized && attempts < 15) {
+            if (window.firebaseDb && typeof firebase !== 'undefined') {
+                this.db = window.firebaseDb;
+                this.analytics = window.firebaseAnalytics;
+                this.isInitialized = true;
+                
+                try {
+                    await this.initializeUserSession();
+                    this.setupBatching();
+                    this.setupOfflineHandling();
+                    console.log('Analytics initialized:', this.userSessionId.slice(-8));
+                    
+                    // Test connection immediately
+                    await this.testConnection();
+                } catch (error) {
+                }
+                break;
+            }
+            attempts++;
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
-
-        // Initialize user document
-        this.initializeUserSession();
         
-        // Set up batching and offline handling
-        this.setupBatching();
-        this.setupOfflineHandling();
-        
-        console.log('Firebase Manager initialized with session:', this.userSessionId);
+        if (!this.isInitialized) {
+            console.warn('Analytics unavailable - continuing in offline mode');
+        }
     }
 
     generateSessionId() {
@@ -39,387 +53,404 @@ class FirebaseManager {
         if (!this.db) return;
 
         try {
-            // Create or get existing user session document
             this.userDocRef = this.db.collection('user_sessions').doc(this.userSessionId);
             
             const sessionData = {
                 sessionId: this.userSessionId,
                 startTime: firebase.firestore.FieldValue.serverTimestamp(),
-                lastActivity: firebase.firestore.FieldValue.serverTimestamp(),
-                userAgent: navigator.userAgent,
-                viewport: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer || 'direct',
-                page: window.location.pathname,
-                
-                // Interaction counters (will be updated, not recreated)
+                source: this.getTrafficSource(),
+                device: this.getDeviceInfo(),
+                location: this.getLocationInfo(),
                 interactions: {
-                    totalClicks: 0,
-                    totalScrolls: 0,
-                    serviceHovers: 0,
+                    serviceViews: 0,
                     portfolioViews: 0,
-                    formInteractions: 0,
-                    testimonialViews: 0
+                    formEngagement: 0,
+                    callToActionClicks: 0
                 },
-                
-                // Performance data
-                performance: {},
-                
-                // Engagement metrics
                 engagement: {
-                    timeOnPage: 0,
+                    timeSpent: 0,
+                    pagesDeep: 1,
                     scrollDepth: 0,
-                    pagesViewed: 1,
-                    bounced: false
+                    qualityScore: 0
                 },
-
-                // Status
                 status: 'active'
             };
 
             await this.userDocRef.set(sessionData);
-            console.log('User session initialized:', this.userSessionId);
             
         } catch (error) {
-            console.error('Failed to initialize user session:', error);
+            console.error('Session init failed:', error.message);
         }
     }
 
-    setupBatching() {
-        // Batch interactions every 10 seconds to minimize writes
-        this.batchInterval = setInterval(() => {
-            if (this.interactionBuffer.length > 0) {
-                this.processBatchedInteractions();
-            }
-        }, 10000);
-
-        // Process on page unload
-        window.addEventListener('beforeunload', () => {
-            this.processBatchedInteractions(true);
-        });
-    }
-
-    setupOfflineHandling() {
-        window.addEventListener('online', () => {
-            this.isOnline = true;
-            console.log('Connection restored - syncing data');
-            this.processBatchedInteractions();
-        });
-
-        window.addEventListener('offline', () => {
-            this.isOnline = false;
-            console.log('Connection lost - buffering interactions');
-        });
-    }
-
-    // INTERACTION TRACKING (BUFFERED)
-    trackInteraction(action, element, value = null, category = 'general') {
-        const interaction = {
-            action,
-            element,
-            value,
-            category,
+    // BUSINESS ANALYTICS TRACKING
+    trackBusinessEvent(event, details = {}) {
+        if (!this.isInitialized) return;
+        
+        const businessEvent = {
+            event,
+            details,
             timestamp: Date.now(),
-            page: window.location.pathname
+            sessionTime: Date.now() - this.sessionStartTime
         };
 
-        this.interactionBuffer.push(interaction);
+        if (this.isBusinessCriticalEvent(event)) {
+            console.log('Business Event:', event, details);
+        }
 
-        // Process immediately for critical actions or when buffer is full
-        if (this.isCriticalAction(action) || this.interactionBuffer.length >= 20) {
-            this.processBatchedInteractions();
+        this.interactionBuffer.push(businessEvent);
+
+        if (this.isCriticalEvent(event) || this.interactionBuffer.length >= 8) {
+            this.processBatch();
         }
     }
 
-    isCriticalAction(action) {
-        const criticalActions = ['form_submit', 'consultation_request', 'newsletter_signup'];
-        return criticalActions.includes(action);
+    isBusinessCriticalEvent(event) {
+        const criticalEvents = [
+            'form_submission', 'consultation_request', 'phone_call_intent',
+            'high_value_service_interest', 'qualified_lead', 'conversion'
+        ];
+        return criticalEvents.includes(event);
     }
 
-    async processBatchedInteractions(isUnload = false) {
+    isCriticalEvent(event) {
+        const criticalEvents = [
+            'form_submission', 'consultation_request', 'phone_call_intent'
+        ];
+        return criticalEvents.includes(event);
+    }
+
+    async processBatch() {
         if (!this.db || !this.userDocRef || this.interactionBuffer.length === 0) return;
 
         try {
-            const batch = this.db.batch();
-            const interactions = [...this.interactionBuffer];
+            const events = [...this.interactionBuffer];
             this.interactionBuffer = [];
 
-            // Group interactions by type for efficient updates
-            const interactionCounts = this.groupInteractionCounts(interactions);
-            const recentInteractions = interactions.slice(-10); // Keep last 10 for detailed tracking
-
-            // Update user session document
-            batch.update(this.userDocRef, {
-                'interactions.totalClicks': firebase.firestore.FieldValue.increment(interactionCounts.clicks || 0),
-                'interactions.totalScrolls': firebase.firestore.FieldValue.increment(interactionCounts.scrolls || 0),
-                'interactions.serviceHovers': firebase.firestore.FieldValue.increment(interactionCounts.serviceHovers || 0),
-                'interactions.portfolioViews': firebase.firestore.FieldValue.increment(interactionCounts.portfolioViews || 0),
-                'interactions.formInteractions': firebase.firestore.FieldValue.increment(interactionCounts.formInteractions || 0),
-                'interactions.testimonialViews': firebase.firestore.FieldValue.increment(interactionCounts.testimonialViews || 0),
-                'lastActivity': firebase.firestore.FieldValue.serverTimestamp(),
-                'recentInteractions': recentInteractions
+            const businessMetrics = this.calculateBusinessMetrics(events);
+            
+            await this.userDocRef.update({
+                'interactions.serviceViews': firebase.firestore.FieldValue.increment(businessMetrics.serviceViews || 0),
+                'interactions.portfolioViews': firebase.firestore.FieldValue.increment(businessMetrics.portfolioViews || 0),
+                'interactions.formEngagement': firebase.firestore.FieldValue.increment(businessMetrics.formEngagement || 0),
+                'interactions.callToActionClicks': firebase.firestore.FieldValue.increment(businessMetrics.callToActionClicks || 0),
+                'engagement.timeSpent': Math.round((Date.now() - this.sessionStartTime) / 1000),
+                'engagement.scrollDepth': businessMetrics.maxScrollDepth || 0,
+                'engagement.qualityScore': this.calculateQualityScore(businessMetrics),
+                'lastActivity': firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            if (isUnload) {
-                // Use sendBeacon for unload events
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon('/api/track', JSON.stringify({
-                        sessionId: this.userSessionId,
-                        interactions: interactionCounts
-                    }));
-                }
-            } else {
-                await batch.commit();
-            }
-
-            console.log(`Processed ${interactions.length} batched interactions`);
-
         } catch (error) {
-            console.error('Failed to process batched interactions:', error);
-            // Re-add failed interactions to buffer for retry
-            this.interactionBuffer.unshift(...interactions);
+            console.error('Analytics batch failed:', error.message);
+            this.interactionBuffer.unshift(...events);
         }
     }
 
-    groupInteractionCounts(interactions) {
-        return interactions.reduce((counts, interaction) => {
-            switch (interaction.action) {
-                case 'click':
-                case 'service_click':
-                case 'portfolio_click':
-                    counts.clicks = (counts.clicks || 0) + 1;
+    calculateBusinessMetrics(events) {
+        return events.reduce((metrics, event) => {
+            switch (event.event) {
+                case 'service_interest':
+                    metrics.serviceViews = (metrics.serviceViews || 0) + 1;
                     break;
-                case 'scroll_depth':
-                    counts.scrolls = (counts.scrolls || 0) + 1;
+                case 'portfolio_engagement':
+                    metrics.portfolioViews = (metrics.portfolioViews || 0) + 1;
                     break;
-                case 'service_hover':
-                    counts.serviceHovers = (counts.serviceHovers || 0) + 1;
+                case 'form_interaction':
+                    metrics.formEngagement = (metrics.formEngagement || 0) + 1;
                     break;
-                case 'portfolio_hover':
-                case 'portfolio_view':
-                    counts.portfolioViews = (counts.portfolioViews || 0) + 1;
+                case 'cta_click':
+                    metrics.callToActionClicks = (metrics.callToActionClicks || 0) + 1;
                     break;
-                case 'form_focus':
-                case 'form_input':
-                case 'form_validation':
-                    counts.formInteractions = (counts.formInteractions || 0) + 1;
-                    break;
-                case 'testimonial_view':
-                case 'testimonial_navigation':
-                    counts.testimonialViews = (counts.testimonialViews || 0) + 1;
+                case 'scroll_milestone':
+                    metrics.maxScrollDepth = Math.max(metrics.maxScrollDepth || 0, event.details.depth || 0);
                     break;
             }
-            return counts;
+            return metrics;
         }, {});
     }
 
-    // FORM SUBMISSION
-    async submitBookingForm(formData) {
-        if (!this.db) throw new Error('Firebase not available');
-
-        try {
-            const enhancedData = this.enhanceFormData(formData);
-            
-            // Create booking document
-            const bookingRef = await this.db.collection('bookings').add(enhancedData);
-            
-            // Update user session to mark as converted
-            if (this.userDocRef) {
-                await this.userDocRef.update({
-                    'conversion': {
-                        bookingId: bookingRef.id,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        serviceType: formData.serviceType,
-                        budget: formData.budget,
-                        leadScore: enhancedData.leadScore
-                    },
-                    'status': 'converted'
-                });
-            }
-
-            console.log('Booking submitted successfully:', bookingRef.id);
-            return bookingRef.id;
-
-        } catch (error) {
-            console.error('Booking submission failed:', error);
-            throw error;
-        }
-    }
-
-    enhanceFormData(formData) {
-        const leadScore = this.calculateLeadScore(formData);
-        const luxuryTier = this.determineLuxuryTier(formData);
+    calculateQualityScore(metrics) {
+        let score = 0;
         
-        return {
-            ...formData,
-            sessionId: this.userSessionId,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            status: 'new',
-            source: 'luxury_website',
-            leadScore: leadScore,
-            priority: this.getPriority(leadScore),
-            luxuryTier: luxuryTier,
-            userAgent: navigator.userAgent,
-            referrer: document.referrer,
-            viewport: `${window.innerWidth}x${window.innerHeight}`
-        };
+        const timeSpent = (Date.now() - this.sessionStartTime) / 1000;
+        if (timeSpent > 300) score += 30;
+        else if (timeSpent > 120) score += 20;
+        else if (timeSpent > 60) score += 10;
+        
+        score += Math.min((metrics.serviceViews || 0) * 10, 30);
+        score += Math.min((metrics.portfolioViews || 0) * 5, 20);
+        score += Math.min((metrics.formEngagement || 0) * 15, 30);
+        
+        if (metrics.maxScrollDepth >= 75) score += 10;
+        else if (metrics.maxScrollDepth >= 50) score += 5;
+        
+        return Math.min(score, 100);
     }
+
+    // FORM SUBMISSION - FIXED DATA STRUCTURE
+   async submitConsultationForm(formData) {
+    if (!this.db) throw new Error('Database unavailable');
+
+    console.log('Submitting consultation form...');
+
+    try {
+        // FIXED: Simplified data structure that matches the rules
+        const consultationData = {
+            // Contact Information (required by rules)
+            contact: {
+                firstName: String(formData.firstName || ''),
+                lastName: String(formData.lastName || ''),
+                email: String(formData.email || ''),
+                phone: String(formData.phone || ''),
+                address: String(formData.address || '')
+            },
+            
+            // Project Details
+            project: {
+                serviceType: String(formData.serviceType || ''),
+                budget: String(formData.budget || ''),
+                propertySize: String(formData.propertySize || ''),
+                preferredDate: String(formData.preferredDate || ''),
+                description: String(formData.projectDescription || '')
+            },
+            
+            // Marketing Data
+            marketing: {
+                source: this.getTrafficSource(),
+                sessionId: this.userSessionId,
+                landingPage: window.location.pathname,
+                referrer: document.referrer || 'direct',
+                deviceType: this.getDeviceInfo().type,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            },
+            
+            // Lead Scoring
+            leadData: {
+                score: this.calculateLeadScore(formData),
+                priority: this.getLeadPriority(formData),
+                estimatedValue: this.estimateProjectValue(formData),
+                urgency: this.assessUrgency(formData)
+            },
+            
+            // Status Tracking
+            status: {
+                current: 'new',
+                contacted: false,
+                qualified: false,
+                converted: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            },
+            
+            // Preferences
+            preferences: {
+                newsletter: Boolean(formData.newsletter),
+                contactMethod: 'email',
+                bestTimeToCall: null
+            }
+        };
+        
+        console.log('Consultation data prepared:', consultationData);
+        
+        // USE SESSION ID AS DOCUMENT ID instead of auto-generating
+        const consultationRef = this.db.collection('consultations').doc(this.userSessionId);
+        await consultationRef.set(consultationData);
+        
+        // Update user session with conversion
+        if (this.userDocRef) {
+            await this.userDocRef.update({
+                'conversion': {
+                    consultationId: this.userSessionId, // Same ID as session
+                    leadScore: consultationData.leadData.score,
+                    estimatedValue: consultationData.leadData.estimatedValue,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                },
+                'status': 'converted'
+            });
+        }
+
+        console.log('Consultation submitted with session ID:', this.userSessionId);
+        return this.userSessionId; // Return the session ID instead of auto-generated ID
+
+    } catch (error) {
+        console.error('Consultation submission failed:', error);
+        throw error;
+    }
+}
 
     calculateLeadScore(formData) {
         let score = 0;
         
         const serviceScores = {
-            'bespoke-design': 35,
-            'comprehensive-estate': 40,
-            'luxury-hardscaping': 30,
-            'botanical-curation': 25,
-            'master-arboriculture': 20,
-            'smart-irrigation': 15,
-            'estate-maintenance': 10
+            'comprehensive-estate': 50,
+            'bespoke-design': 45,
+            'luxury-hardscaping': 40,
+            'botanical-curation': 35,
+            'master-arboriculture': 25,
+            'smart-irrigation': 20,
+            'estate-maintenance': 15
         };
-        score += serviceScores[formData.serviceType] || 0;
+        score += serviceScores[formData.serviceType] || 10;
         
         const budgetScores = {
-            'over-1m': 40,
-            '500k-1m': 35,
-            '250k-500k': 25,
-            '100k-250k': 15,
-            '50k-100k': 5
+            'over-1m': 50,
+            '500k-1m': 40,
+            '250k-500k': 30,
+            '100k-250k': 20,
+            '50k-100k': 10
         };
-        score += budgetScores[formData.budget] || 0;
+        score += budgetScores[formData.budget] || 5;
         
         if (formData.propertySize) {
             const sizeStr = formData.propertySize.toLowerCase();
             if (sizeStr.includes('acre')) {
                 const acres = parseFloat(sizeStr);
-                if (acres >= 5) score += 20;
+                if (acres >= 5) score += 25;
                 else if (acres >= 2) score += 15;
                 else if (acres >= 1) score += 10;
             }
         }
         
-        if (formData.projectDescription && formData.projectDescription.length > 150) {
+        if (formData.projectDescription && formData.projectDescription.length > 200) {
             score += 15;
         }
         
         return Math.min(score, 100);
     }
 
-    determineLuxuryTier(formData) {
-        const budget = formData.budget;
-        if (budget === 'over-1m') return 'platinum';
-        if (['500k-1m', '250k-500k'].includes(budget)) return 'gold';
-        if (budget === '100k-250k') return 'silver';
-        return 'bronze';
+    getLeadPriority(formData) {
+        const score = this.calculateLeadScore(formData);
+        if (score >= 80) return 'hot';
+        if (score >= 60) return 'warm';
+        if (score >= 40) return 'qualified';
+        return 'cold';
     }
 
-    getPriority(leadScore) {
-        if (leadScore >= 80) return 'premium';
-        if (leadScore >= 60) return 'high';
-        if (leadScore >= 40) return 'medium';
-        return 'standard';
+    estimateProjectValue(formData) {
+        const budgetValues = {
+            'over-1m': 1500000,
+            '500k-1m': 750000,
+            '250k-500k': 375000,
+            '100k-250k': 175000,
+            '50k-100k': 75000
+        };
+        return budgetValues[formData.budget] || 50000;
     }
 
-    // NEWSLETTER SUBSCRIPTION
-    async subscribeToNewsletter(email) {
-        if (!this.db) return;
+    assessUrgency(formData) {
+        if (formData.preferredDate) {
+            const preferredDate = new Date(formData.preferredDate);
+            const now = new Date();
+            const daysUntil = Math.ceil((preferredDate - now) / (1000 * 60 * 60 * 24));
+            
+            if (daysUntil <= 30) return 'urgent';
+            if (daysUntil <= 90) return 'moderate';
+            return 'flexible';
+        }
+        return 'unknown';
+    }
 
-        try {
-            // Check if email already exists
-            const existingSubscriber = await this.db.collection('newsletter_subscribers')
-                .where('email', '==', email)
-                .limit(1)
-                .get();
+    // UTILITY METHODS
+    getTrafficSource() {
+        const referrer = document.referrer;
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.get('utm_source')) {
+            return {
+                type: 'paid',
+                source: urlParams.get('utm_source'),
+                medium: urlParams.get('utm_medium'),
+                campaign: urlParams.get('utm_campaign')
+            };
+        }
+        
+        if (!referrer) return { type: 'direct', source: 'direct' };
+        
+        if (referrer.includes('google')) return { type: 'organic', source: 'google' };
+        if (referrer.includes('facebook')) return { type: 'social', source: 'facebook' };
+        if (referrer.includes('instagram')) return { type: 'social', source: 'instagram' };
+        
+        return { type: 'referral', source: new URL(referrer).hostname };
+    }
 
-            if (existingSubscriber.empty) {
-                // Add new subscriber
-                await this.db.collection('newsletter_subscribers').add({
-                    email: email,
-                    sessionId: this.userSessionId,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    source: 'luxury_booking_form',
-                    status: 'active'
-                });
-            } else {
-                // Update existing subscriber
-                const doc = existingSubscriber.docs[0];
-                await doc.ref.update({
-                    lastSubscription: firebase.firestore.FieldValue.serverTimestamp(),
-                    sessionId: this.userSessionId,
-                    status: 'active'
-                });
+    getDeviceInfo() {
+        const ua = navigator.userAgent;
+        let type = 'desktop';
+        
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+            type = 'mobile';
+        } else if (/iPad|Android(?=.*Tablet)/i.test(ua)) {
+            type = 'tablet';
+        }
+        
+        return {
+            type,
+            screen: `${window.innerWidth}x${window.innerHeight}`,
+            userAgent: ua.slice(0, 100)
+        };
+    }
+
+    getLocationInfo() {
+        return {
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            language: navigator.language
+        };
+    }
+
+    // BUSINESS EVENT SHORTCUTS
+    trackServiceInterest(serviceName) {
+        this.trackBusinessEvent('service_interest', { service: serviceName });
+    }
+
+    trackPortfolioEngagement(projectName) {
+        this.trackBusinessEvent('portfolio_engagement', { project: projectName });
+    }
+
+    trackFormInteraction(fieldName) {
+        this.trackBusinessEvent('form_interaction', { field: fieldName });
+    }
+
+    trackCallToAction(buttonText, location) {
+        this.trackBusinessEvent('cta_click', { button: buttonText, location });
+    }
+
+    trackScrollMilestone(percentage) {
+        this.trackBusinessEvent('scroll_milestone', { depth: percentage });
+    }
+
+    trackPhoneIntent() {
+        this.trackBusinessEvent('phone_call_intent', { method: 'click' });
+    }
+
+    // SETUP METHODS
+    setupBatching() {
+        this.batchInterval = setInterval(() => {
+            if (this.interactionBuffer.length > 0) {
+                this.processBatch();
             }
+        }, 20000);
 
-        } catch (error) {
-            console.error('Newsletter subscription error:', error);
-        }
+        window.addEventListener('beforeunload', () => {
+            this.processBatch();
+        });
     }
 
-    // PERFORMANCE TRACKING
-    async trackPerformanceMetrics(perfData) {
-        if (!this.db || !this.userDocRef) return;
+    setupOfflineHandling() {
+        window.addEventListener('online', () => {
+            this.isOnline = true;
+            this.processBatch();
+        });
 
-        try {
-            await this.userDocRef.update({
-                'performance': {
-                    loadTime: perfData.loadTime,
-                    domContentLoaded: perfData.domContentLoaded,
-                    timeToFirstByte: perfData.timeToFirstByte,
-                    connectionType: navigator.connection?.effectiveType || 'unknown',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }
-            });
-
-        } catch (error) {
-            console.error('Performance tracking error:', error);
-        }
+        window.addEventListener('offline', () => {
+            this.isOnline = false;
+        });
     }
 
-    // ENGAGEMENT TRACKING
-    async updateEngagementMetrics(metrics) {
-        if (!this.db || !this.userDocRef) return;
-
-        try {
-            await this.userDocRef.update({
-                'engagement.timeOnPage': metrics.timeEngaged,
-                'engagement.scrollDepth': metrics.maxScrollDepth,
-                'engagement.bounced': metrics.timeEngaged < 30, // Less than 30 seconds
-                'lastActivity': firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-        } catch (error) {
-            console.error('Engagement tracking error:', error);
-        }
-    }
-
-    // CLEANUP
     cleanup() {
         if (this.batchInterval) {
             clearInterval(this.batchInterval);
         }
-        
-        if (this.batchTimeout) {
-            clearTimeout(this.batchTimeout);
-        }
-
-        // Process any remaining interactions
-        this.processBatchedInteractions(true);
-    }
-
-    // SESSION MANAGEMENT
-    async endSession() {
-        if (!this.db || !this.userDocRef) return;
-
-        try {
-            await this.userDocRef.update({
-                'endTime': firebase.firestore.FieldValue.serverTimestamp(),
-                'status': 'ended'
-            });
-
-        } catch (error) {
-            console.error('Session end error:', error);
-        }
+        this.processBatch();
     }
 }
 
-// Export for use in other modules
-export default FirebaseManager;
+window.FirebaseManager = FirebaseManager;

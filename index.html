@@ -615,7 +615,7 @@
 
                         <div class="form-luxury-row">
                             <div class="form-luxury-group">
-                                <label for="preferredDate">Preferred Consultation Date</label>
+                                <label for="preferredDate">Preferred Date</label>
                                 <input type="date" id="preferredDate" name="preferredDate">
                             </div>
                             <div class="form-luxury-group">
@@ -711,7 +711,7 @@
                             <i class="fas fa-leaf"></i>
                         </div>
                         <div class="logo-text">
-                            <h3>Culturascape</h3>
+                            <h3>Cultura</h3>
                             <span>Luxury Garden Atelier</span>
                         </div>
                     </div>
@@ -776,7 +776,7 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <h3>Consultation Requested</h3>
-            <p>Thank you for your interest in Culturascape. Our design team will contact you within 24 hours to schedule your private consultation and begin crafting your extraordinary outdoor sanctuary.</p>
+            <p>Thank you for your interest in Culturascape. Our design team will contact you to schedule your private consultation.</p>
             <button class="btn-luxury-primary" onclick="closeModal()">
                 <span>Close</span>
             </button>
@@ -833,10 +833,15 @@
 </div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-    <script src="script.js"></script>
+
+<!-- Your JavaScript files in correct order -->
+<script src="firebase-config.js"></script>
+<script src="firebase-manager.js"></script>
+<script src="profile-manager.js"></script>
+<script src="script.js"></script>
 </body>
 </html> 
                 

@@ -1,11 +1,11 @@
 // ==========================================
-// PROFILE MANAGER - USER PROFILE & PREFERENCES
+// PROFILE MANAGER - FIXED VERSION
 // ==========================================
 
 class ProfileManager {
     constructor(firebaseManager) {
         this.firebaseManager = firebaseManager;
-        this.db = firebaseManager.db;
+        this.db = firebaseManager ? firebaseManager.db : null;
         this.userProfile = null;
         this.preferences = this.getDefaultPreferences();
         this.storageKey = 'culturascape_profile';
@@ -81,7 +81,7 @@ class ProfileManager {
 
     // FIREBASE SYNC OPERATIONS
     async syncWithFirebase() {
-        if (!this.db || !this.firebaseManager.userDocRef) return;
+        if (!this.db || !this.firebaseManager.userSessionId) return;
 
         try {
             // Check if profile exists in Firebase
@@ -200,7 +200,9 @@ class ProfileManager {
         this.applyPreferences();
         
         // Track preference changes
-        this.firebaseManager.trackInteraction('preference_update', 'settings', null, 'profile');
+        if (this.firebaseManager) {
+            this.firebaseManager.trackInteraction('preference_update', 'settings', null, 'profile');
+        }
     }
 
     getPreferences() {
@@ -459,5 +461,6 @@ class ProfileManager {
     }
 }
 
-// Export for use in other modules
-export default ProfileManager;
+// Make available globally (NO EXPORT!)
+window.ProfileManager = ProfileManager;
+console.log('Profile Manager class loaded');

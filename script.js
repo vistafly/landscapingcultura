@@ -855,11 +855,13 @@ class TestimonialsCarousel {
 }
 
 // ==========================================
-// FORM MANAGER
+// BUSINESS-FOCUSED FORM MANAGER
 // ==========================================
+
 class FormManager {
-    constructor(accessibilityManager) {
+    constructor(accessibilityManager, firebaseManager = null) {
         this.accessibilityManager = accessibilityManager;
+        this.firebaseManager = firebaseManager;
         this.form = document.getElementById('bookingForm');
         this.isSubmitting = false;
         
@@ -912,6 +914,11 @@ class FormManager {
     handleFieldFocus(e) {
         e.target.parentElement.classList.add('field-focused');
         this.clearFieldError(e.target);
+        
+        // Track form engagement for business analytics
+        if (this.firebaseManager) {
+            this.firebaseManager.trackFormInteraction(e.target.name || e.target.id || 'field');
+        }
     }
 
     handleFieldBlur(e) {
@@ -928,6 +935,11 @@ class FormManager {
         
         if (field.value.trim()) {
             this.validateField(field, false);
+        }
+        
+        // Track meaningful form interactions (not every keystroke)
+        if (this.firebaseManager && field.value.length > 0 && field.value.length % 10 === 0) {
+            this.firebaseManager.trackFormInteraction(field.name || field.id || 'field');
         }
     }
 
@@ -1008,6 +1020,12 @@ class FormManager {
 
         if (!isFormValid) {
             this.accessibilityManager.announce('Please correct the errors in the form');
+            
+            if (this.firebaseManager) {
+                this.firebaseManager.trackBusinessEvent('form_validation_error', {
+                    errors: this.getValidationErrors()
+                });
+            }
             return;
         }
 
@@ -1015,35 +1033,97 @@ class FormManager {
         this.showLoadingState();
 
         try {
-            await this.simulateSubmission();
+            const formData = this.collectFormData();
+            
+            if (this.firebaseManager && this.firebaseManager.isInitialized) {
+                // Use the new consultation submission method
+                const consultationId = await this.firebaseManager.submitConsultationForm(formData);
+                console.log('Consultation submitted:', consultationId);
+                
+                // Track successful conversion
+                this.firebaseManager.trackBusinessEvent('conversion', {
+                    type: 'consultation_request',
+                    consultationId: consultationId,
+                    leadScore: this.calculateFormLeadScore(formData)
+                });
+                
+            } else {
+                console.warn('Analytics unavailable - form data not tracked');
+            }
+            
             this.showSuccessMessage();
             this.resetForm();
-            this.accessibilityManager.announce('Form submitted successfully');
+            this.accessibilityManager.announce('Consultation request submitted successfully');
+            
         } catch (error) {
+            console.error('Form submission failed:', error.message);
             this.showErrorMessage();
+            
+            if (this.firebaseManager) {
+                this.firebaseManager.trackBusinessEvent('form_submission_error', {
+                    error: error.message.slice(0, 100)
+                });
+            }
         } finally {
             this.isSubmitting = false;
             this.hideLoadingState();
         }
     }
 
-    simulateSubmission() {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > 0.1) {
-                    resolve();
-                } else {
-                    reject(new Error('Submission failed'));
-                }
-            }, 2000);
+    collectFormData() {
+        const formData = new FormData(this.form);
+        const data = {};
+        
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        
+        return data;
+    }
+
+    getValidationErrors() {
+        const errors = [];
+        const fields = this.form.querySelectorAll('[required]');
+        
+        fields.forEach(field => {
+            if (!this.validateField(field, false)) {
+                errors.push(field.name || field.id || 'unknown_field');
+            }
         });
+        
+        return errors;
+    }
+
+    calculateFormLeadScore(formData) {
+        let score = 0;
+        
+        // Quick lead scoring for immediate business insight
+        const highValueServices = ['comprehensive-estate', 'bespoke-design', 'luxury-hardscaping'];
+        if (highValueServices.includes(formData.serviceType)) score += 30;
+        
+        const highValueBudgets = ['over-1m', '500k-1m', '250k-500k'];
+        if (highValueBudgets.includes(formData.budget)) score += 40;
+        
+        if (formData.projectDescription && formData.projectDescription.length > 100) score += 20;
+        
+        if (formData.preferredDate) score += 10; // Shows urgency
+        
+        return Math.min(score, 100);
     }
 
     showLoadingState() {
         const submitBtn = this.form.querySelector('.btn-luxury-submit');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            if (btnText && btnLoading) {
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-flex';
+            } else {
+                submitBtn.textContent = 'Submitting...';
+            }
         }
     }
 
@@ -1051,19 +1131,34 @@ class FormManager {
         const submitBtn = this.form.querySelector('.btn-luxury-submit');
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Schedule Private Consultation <i class="fas fa-arrow-right"></i>';
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            if (btnText && btnLoading) {
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            } else {
+                submitBtn.innerHTML = 'Schedule Private Consultation <i class="fas fa-arrow-right"></i>';
+            }
         }
     }
 
     showSuccessMessage() {
-        const modal = document.getElementById('successModal');
-        if (modal) {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        } else {
-            alert('Thank you! We will contact you within 24 hours to schedule your consultation.');
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.add('show'); // Changed from style.display = 'block'
+        document.body.style.overflow = 'hidden';
+        
+        // Focus management for accessibility
+        const closeBtn = modal.querySelector('.close-modal-luxury, .btn-luxury-primary');
+        if (closeBtn) {
+            setTimeout(() => closeBtn.focus(), 100);
         }
+    } else {
+        // Fallback alert if modal doesn't exist
+        alert('Thank you! We will contact you within 24 hours to schedule your consultation.');
     }
+}
 
     showErrorMessage() {
         alert('There was an error submitting your form. Please call (555) 123-LUXURY for immediate assistance.');
@@ -1078,7 +1173,6 @@ class FormManager {
         });
     }
 }
-
 // ==========================================
 // MODAL MANAGER
 // ==========================================
@@ -1121,10 +1215,10 @@ class ModalManager {
     }
 
     closeModal(modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        this.accessibilityManager.announce('Dialog closed');
-    }
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    this.accessibilityManager.announce('Dialog closed');
+}
 }
 
 // ==========================================
@@ -1201,18 +1295,20 @@ class InteractionEnhancer {
 }
 
 // ==========================================
-// MAIN APPLICATION CLASS
+// BUSINESS-FOCUSED MAIN APPLICATION CLASS
 // ==========================================
 class CulturascapeApp {
     constructor() {
         this.performanceManager = new PerformanceManager();
         this.accessibilityManager = new AccessibilityManager();
+        this.firebaseManager = null;
         this.scrollAnimationManager = null;
         this.navigationManager = null;
         this.testimonialsCarousel = null;
         this.formManager = null;
         this.modalManager = null;
         this.interactionEnhancer = null;
+        this.floatingElementsManager = null;
         this.isInitialized = false;
         
         this.init();
@@ -1226,42 +1322,196 @@ class CulturascapeApp {
         }
     }
 
-    initializeComponents() {
+    async initializeComponents() {
         try {
-            // Initialize all managers
+            // Initialize Firebase for business analytics
+            if (window.FirebaseManager) {
+                this.firebaseManager = new window.FirebaseManager();
+                
+                let attempts = 0;
+                while (!this.firebaseManager.isInitialized && attempts < 20) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    attempts++;
+                }
+                
+                if (this.firebaseManager.isInitialized) {
+                    // Track app initialization for business metrics
+                    this.firebaseManager.trackBusinessEvent('app_loaded', {
+                        loadTime: Date.now(),
+                        userAgent: navigator.userAgent.slice(0, 50)
+                    });
+                }
+            }
+
+            // Initialize all other managers
             this.scrollAnimationManager = new ScrollAnimationManager(this.performanceManager);
             this.navigationManager = new NavigationManager(this.accessibilityManager);
             this.testimonialsCarousel = new TestimonialsCarousel(this.accessibilityManager);
-            this.formManager = new FormManager(this.accessibilityManager);
+            this.formManager = new FormManager(this.accessibilityManager, this.firebaseManager);
             this.modalManager = new ModalManager(this.accessibilityManager);
-            this.interactionEnhancer = new InteractionEnhancer(this.performanceManager);
+            this.interactionEnhancer = new InteractionEnhancer(this.performanceManager, this.firebaseManager);
             this.floatingElementsManager = new FloatingElementsManager(this.performanceManager);
 
+            // Setup business-focused tracking
+            this.setupBusinessTracking();
             
             // Additional setup
             this.setupErrorHandling();
             this.setupResponsiveImages();
-            this.setupAnalytics();
+            this.setupBusinessAnalytics();
             
-            // Mark as initialized
             this.isInitialized = true;
             document.body.classList.add('app-initialized');
             
-            console.log('Culturascape Luxury Experience Initialized Successfully');
-            
         } catch (error) {
-            console.error('Initialization error:', error);
+            console.error('App initialization failed:', error.message);
             this.handleInitializationError(error);
         }
     }
 
+    setupBusinessTracking() {
+        if (!this.firebaseManager || !this.firebaseManager.isInitialized) return;
+
+        // Track high-value service interactions
+        document.querySelectorAll('.service-luxury-card').forEach((card, index) => {
+            const serviceName = card.querySelector('h3')?.textContent || `Service ${index + 1}`;
+            
+            card.addEventListener('click', () => {
+                this.firebaseManager.trackServiceInterest(serviceName);
+                this.firebaseManager.trackCallToAction('Service Card', 'Services Section');
+            });
+            
+            // Track meaningful hover (not just mouseover)
+            let hoverTimeout;
+            card.addEventListener('mouseenter', () => {
+                hoverTimeout = setTimeout(() => {
+                    this.firebaseManager.trackServiceInterest(serviceName);
+                }, 2000); // Only track if hovered for 2+ seconds
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                clearTimeout(hoverTimeout);
+            });
+        });
+
+        // Track portfolio engagement
+        document.querySelectorAll('.portfolio-luxury-item').forEach((item, index) => {
+            const projectName = item.querySelector('h4')?.textContent || `Project ${index + 1}`;
+            
+            item.addEventListener('click', () => {
+                this.firebaseManager.trackPortfolioEngagement(projectName);
+            });
+        });
+
+        // Track consultation CTAs
+        document.querySelectorAll('.btn-luxury-primary, .consultation-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const btnText = btn.querySelector('span')?.textContent || btn.textContent || 'CTA';
+                this.firebaseManager.trackCallToAction(btnText.trim(), 'Primary Button');
+            });
+        });
+
+        // Track phone number clicks
+        document.querySelectorAll('a[href^="tel:"]').forEach(phoneLink => {
+            phoneLink.addEventListener('click', () => {
+                this.firebaseManager.trackPhoneIntent();
+            });
+        });
+
+        // Track meaningful scroll depth (business relevant)
+        let maxScrollDepth = 0;
+        const businessScrollTracker = this.performanceManager.throttle(() => {
+            const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+            
+            // Only track significant milestones
+            [50, 75, 90].forEach(milestone => {
+                if (scrollPercent >= milestone && maxScrollDepth < milestone) {
+                    maxScrollDepth = milestone;
+                    this.firebaseManager.trackScrollMilestone(milestone);
+                }
+            });
+        }, 2000);
+        
+        window.addEventListener('scroll', businessScrollTracker);
+
+        // Track qualified engagement time
+        let qualifiedTime = 0;
+        const qualifiedTimeTracker = setInterval(() => {
+            qualifiedTime += 30;
+            
+            // Track engagement milestones that indicate interest
+            if ([60, 180, 300].includes(qualifiedTime)) {
+                this.firebaseManager.trackBusinessEvent('qualified_engagement', { 
+                    timeSpent: qualifiedTime,
+                    quality: this.assessEngagementQuality()
+                });
+            }
+        }, 30000);
+
+        // Track section engagement for business insights
+        if ('IntersectionObserver' in window) {
+            const businessSectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionName = this.getBusinessSectionName(entry.target);
+                        if (sectionName) {
+                            this.firebaseManager.trackBusinessEvent('section_engagement', { 
+                                section: sectionName,
+                                timeSpent: entry.intersectionTime || Date.now()
+                            });
+                        }
+                    }
+                });
+            }, { threshold: 0.6 });
+
+            // Only track business-relevant sections
+            document.querySelectorAll('#services, #portfolio, #booking, #testimonials').forEach(section => {
+                businessSectionObserver.observe(section);
+            });
+        }
+    }
+
+    getBusinessSectionName(element) {
+        const sectionMap = {
+            'services': 'Services',
+            'portfolio': 'Portfolio',
+            'booking': 'Consultation Form',
+            'testimonials': 'Testimonials',
+            'about': 'About'
+        };
+        
+        return sectionMap[element.id] || null;
+    }
+
+    assessEngagementQuality() {
+        // Simple engagement quality assessment
+        const scrollDepth = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+        const servicesViewed = document.querySelectorAll('.service-luxury-card:hover').length;
+        
+        let quality = 'low';
+        if (scrollDepth > 75 && servicesViewed > 2) quality = 'high';
+        else if (scrollDepth > 50) quality = 'medium';
+        
+        return quality;
+    }
+
     setupErrorHandling() {
         window.addEventListener('error', (event) => {
-            console.error('JavaScript error:', event.error);
+            // Only log critical errors that affect business
+            if (event.error && event.error.message) {
+                console.error('Critical error:', event.error.message);
+                
+                if (this.firebaseManager && this.firebaseManager.isInitialized) {
+                    this.firebaseManager.trackBusinessEvent('critical_error', {
+                        message: event.error.message.slice(0, 100),
+                        source: event.filename || 'unknown'
+                    });
+                }
+            }
         });
 
         window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
+            console.error('Promise rejection:', event.reason?.message || 'unknown');
         });
     }
 
@@ -1273,34 +1523,58 @@ class CulturascapeApp {
             });
             
             img.addEventListener('error', () => {
-                console.warn('Image failed to load:', img.src);
-                // Show fallback or hide broken image
                 img.style.display = 'none';
+                // Only track if it affects user experience
+                if (img.classList.contains('portfolio-image') || img.classList.contains('hero-image')) {
+                    console.warn('Important image failed:', img.src);
+                }
             });
         });
     }
 
-    setupAnalytics() {
-        // Track page visibility
+    setupBusinessAnalytics() {
+        // Track business-relevant page events
         document.addEventListener('visibilitychange', () => {
-            console.log(document.hidden ? 'Page hidden' : 'Page visible');
+            if (this.firebaseManager && this.firebaseManager.isInitialized) {
+                this.firebaseManager.trackBusinessEvent('page_focus', { 
+                    visible: !document.hidden 
+                });
+            }
         });
 
-        // Track engagement time
-        let startTime = Date.now();
+        // Track session completion and quality
         window.addEventListener('beforeunload', () => {
-            const timeOnPage = Date.now() - startTime;
-            console.log('Time on page:', timeOnPage / 1000, 'seconds');
+            if (this.firebaseManager) {
+                const sessionDuration = Date.now() - this.firebaseManager.sessionStartTime;
+                this.firebaseManager.trackBusinessEvent('session_complete', {
+                    duration: Math.round(sessionDuration / 1000),
+                    quality: this.assessSessionQuality(sessionDuration)
+                });
+                
+                this.firebaseManager.cleanup();
+            }
         });
     }
 
+    assessSessionQuality(duration) {
+        const durationSeconds = duration / 1000;
+        if (durationSeconds > 300) return 'high'; // 5+ minutes
+        if (durationSeconds > 120) return 'medium'; // 2+ minutes
+        return 'low';
+    }
+
     handleInitializationError(error) {
-        console.error('Critical initialization error:', error);
+        console.error('Critical initialization error:', error.message);
         
-        // Add fallback class
+        if (this.firebaseManager && this.firebaseManager.isInitialized) {
+            this.firebaseManager.trackBusinessEvent('initialization_error', {
+                error: error.message.slice(0, 100)
+            });
+        }
+        
         document.body.classList.add('app-fallback');
         
-        // Basic form functionality
+        // Ensure basic functionality
         const form = document.getElementById('bookingForm');
         if (form) {
             form.addEventListener('submit', (e) => {
@@ -1309,34 +1583,41 @@ class CulturascapeApp {
             });
         }
 
-        // Basic modal functionality
         window.closeModal = () => {
-            const modal = document.querySelector('.modal-luxury[style*="block"]');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        };
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+};
     }
 
     destroy() {
-    if (this.testimonialsCarousel) {
-        this.testimonialsCarousel.cleanup();
-    }
-    
-    // ADD THIS:
-    if (this.floatingElementsManager) {
-        this.floatingElementsManager.cleanup();
-    }
-    
-    console.log('Culturascape app destroyed');
-}
-    toggleTheme() {
-        document.body.classList.toggle('dark-theme');
-        return document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+        if (this.testimonialsCarousel) {
+            this.testimonialsCarousel.cleanup();
+        }
+        
+        if (this.floatingElementsManager) {
+            this.floatingElementsManager.cleanup();
+        }
+        
+        if (this.firebaseManager) {
+            this.firebaseManager.cleanup();
+        }
     }
 
-    // Static utility methods
+    toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const newTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+        
+        if (this.firebaseManager && this.firebaseManager.isInitialized) {
+            this.firebaseManager.trackBusinessEvent('theme_change', { theme: newTheme });
+        }
+        
+        return newTheme;
+    }
+
+    // Static utility methods remain the same
     static smoothScrollTo(target, duration = 1000) {
         const targetElement = typeof target === 'string' ? document.querySelector(target) : target;
         if (!targetElement) return;
@@ -1479,11 +1760,6 @@ function injectCriticalAnimations() {
             box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.2) !important;
         }
         
-        .keyboard-focus {
-            outline: 3px solid #d4af37 !important;
-            outline-offset: 2px !important;
-        }
-        
         .sr-only {
             position: absolute !important;
             width: 1px !important;
@@ -1567,14 +1843,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Emergency fallback
         document.body.classList.add('emergency-fallback');
         
-        // Basic modal close function
         window.closeModal = () => {
-            const modal = document.getElementById('successModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        };
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+};
         
         // Basic form handling
         const form = document.getElementById('bookingForm');
