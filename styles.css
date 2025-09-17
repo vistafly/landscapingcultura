@@ -1560,6 +1560,7 @@ p {
     color: rgb(255, 255, 255);
     border-color: rgb(150, 150, 150);
     transform: translateX(8px);
+    background-color: #96969642;
 }
 
 .service-luxury-link i {
@@ -2172,10 +2173,10 @@ p {
 .carousel-btn {
     width: 70px;
     height: 70px;
-    background: var(--gradient-emerald);
+    background: rgba(255, 255, 255, 0.103);
     border: none;
     border-radius: var(--border-radius-round);
-    color: var(--luxury-white);
+    color: rgba(151, 151, 151, 0.541);
     cursor: pointer;
     transition: all 0.4s var(--ease-luxury);
     display: flex;
@@ -2215,8 +2216,9 @@ p {
 }
 
 .carousel-btn:hover {
-    transform: scale(1.2) translateY(-8px);
-    box-shadow: 0 20px 60px rgba(15, 60, 46, 0.5);
+    transform: scale(1.1) translateY(-8px);
+    box-shadow: 0 20px 60px rgba(179, 179, 179, 0.301);
+    background-color: #d4d4d463;
 }
 
 .carousel-btn i {
@@ -2226,12 +2228,12 @@ p {
 
 .carousel-indicators {
     display: flex;
-    gap: var(--space-sm);
+    gap: 20px;
 }
 
 .indicator {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     border-radius: var(--border-radius-round);
     background: rgba(212, 175, 55, 0.3);
     cursor: pointer;
@@ -2593,7 +2595,7 @@ p {
 
 .btn-luxury-submit {
     width: 100%;
-    padding: 30px;
+    padding: 20px;
     font-size: 1.3rem;
     font-weight: 700;
     position: relative;
@@ -2726,7 +2728,7 @@ p {
 .contact-luxury-item {
     display: flex;
     gap: var(--space-lg);
-    padding: var(--space-xl);
+    padding: var(--space-md);
     background: rgba(253, 253, 249, 0.9);
     backdrop-filter: var(--glass-ultra-blur);
     -webkit-backdrop-filter: var(--glass-ultra-blur);
@@ -3937,8 +3939,8 @@ p {
     }
 
     .carousel-btn {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         font-size: 1.1rem;
     }
 
@@ -4037,12 +4039,6 @@ p {
         width: 80px;
         height: 80px;
         font-size: 1.8rem;
-    }
-
-    .carousel-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 0.9rem;
     }
 
     .indicator {
