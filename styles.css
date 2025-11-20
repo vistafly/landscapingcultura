@@ -187,12 +187,6 @@ p {
     position: relative;
 }
 
-@media (max-width: 1200px) {
-    .container {
-        padding: 0 var(--space-md);
-    }
-}
-
 /* ==========================================
    PREMIUM BUTTON SYSTEM
    ========================================== */
@@ -730,6 +724,15 @@ p {
     .logo-img {
         width: 120%;
         min-height: auto;
+    }
+}
+/* Large screens (1200px and up) - keep at default 155% */
+@media (min-width: 1200px) {
+    .logo-img {
+        width: 120%;
+        min-height: 120%;
+        transform: translateY(-15%) translateZ(0);
+        filter: drop-shadow(0 8px 40px rgba(0, 0, 0, 0.3));
     }
 }
 
@@ -1310,7 +1313,7 @@ p {
 
 @media (max-width: 768px) {
     .services {
-        padding-top: 5vh;
+        padding-top: 13vh;
     }
 }
 
@@ -1583,8 +1586,8 @@ p {
 }
 
 @media (max-width: 768px) {
-    .about-luxury {
-        padding-top: 5vh;
+    .about-luxury,.portfolio-luxury {
+        padding-top: 8vh;
     }
 }
 
@@ -2842,6 +2845,11 @@ p {
         height: 60px;
     }
 }
+@media (max-width: 768px) {
+    .about-luxury,.portfolio-luxury, .testimonials-luxury, .booking-luxury, .contact-luxury {
+        padding-top: 8vh;
+    }
+}
 .contact-luxury-icon::before {
     content: '';
     position: absolute;
@@ -3861,10 +3869,6 @@ p {
         --space-lg: 2rem;
         --space-xl: 3rem;
         --space-xxl: 4rem;
-    }
-    
-    .container {
-        padding: 0 var(--space-md);
     }
     
     .navbar {
